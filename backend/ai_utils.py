@@ -25,6 +25,17 @@ def generate_sql(question):
     prompt = f"""
 {schema}
 
+Analyze the question carefully.
+
+Determine:
+1. What business objective is being requested.
+2. Which tables are required.
+3. Which filters are required.
+4. Which joins are required.
+5. Whether complaint-related filtering is needed.
+
+Then generate the PostgreSQL query.
+
 Question:
 {question}
 
@@ -47,19 +58,17 @@ You are a business analytics assistant.
 User Question:
 {question}
 
-SQL Used:
-{sql}
-
 Database Result:
 {rows}
 
-Provide a short professional summary.
+Provide a concise professional summary.
 
 Rules:
 - Do not mention SQL.
 - Do not mention databases.
 - Do not invent information.
-- Keep response under 100 words.
+- Only discuss information visible in the results.
+- Keep response under 75 words.
 """
 
     return call_qwen(prompt)
