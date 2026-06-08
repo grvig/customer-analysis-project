@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from database import execute_query, execute_custom_query
 from ai_utils import ask_ai
+from report_generator import generate_report
 
 app = FastAPI()
 
@@ -10,6 +11,9 @@ class QueryRequest(BaseModel):
 
 class AskRequest(BaseModel):
     question: str
+
+class ReportRequest(BaseModel):
+    report_type: str
 
 @app.get("/")
 def home():
@@ -180,3 +184,23 @@ def ask_question(request: AskRequest):
     )
 
     return result
+
+@app.post("/report")
+def create_report(request: ReportRequest):
+
+    if request.report_type.lower() != "complaint":
+
+        return {
+            "success": False,
+            "report": None,
+            "error": "Only complaint reports are currently supported."
+        }
+
+    report = generate_report()
+
+    return {
+        "success": True,
+        "report_type": request.report_type,
+        "report": report,
+        "error": None
+    }
