@@ -1,11 +1,15 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from database import execute_query, execute_custom_query
+from ai_utils import ask_ai
 
 app = FastAPI()
 
 class QueryRequest(BaseModel):
     sql: str
+
+class AskRequest(BaseModel):
+    question: str
 
 @app.get("/")
 def home():
@@ -167,3 +171,12 @@ def run_query(request: QueryRequest):
     return {
         "rows": rows
     }
+
+@app.post("/ask")
+def ask_question(request: AskRequest):
+
+    result = ask_ai(
+        request.question
+    )
+
+    return result
