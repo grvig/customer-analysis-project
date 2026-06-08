@@ -25,17 +25,31 @@ def execute_query(query):
 
 def execute_custom_query(query):
 
-    conn = get_connection()
-    cur = conn.cursor()
-
-    cur.execute(query)
-
     try:
-        rows = cur.fetchall()
-    except:
-        rows = []
 
-    cur.close()
-    conn.close()
+        conn = get_connection()
+        cur = conn.cursor()
 
-    return rows
+        cur.execute(query)
+
+        try:
+            rows = cur.fetchall()
+        except:
+            rows = []
+
+        cur.close()
+        conn.close()
+
+        return {
+            "success": True,
+            "rows": rows,
+            "error": None
+        }
+
+    except Exception as e:
+
+        return {
+            "success": False,
+            "rows": [],
+            "error": str(e)
+        }

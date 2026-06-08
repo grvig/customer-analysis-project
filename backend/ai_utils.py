@@ -1,5 +1,14 @@
 import subprocess
+import re
 from database import execute_custom_query
+
+def clean_text(text):
+
+    text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
+    text = text.replace('\u001b', '')
+    text = text.strip()
+
+    return text
 
 def call_qwen(prompt):
 
@@ -15,11 +24,18 @@ def call_qwen(prompt):
         encoding="utf-8"
     )
 
-    return result.stdout.strip()
+    return clean_text(
+        result.stdout.strip()
+    )
 
 def generate_sql(question):
 
-    with open("schema_context.txt", "r", encoding="utf-8") as f:
+    with open(
+        "schema_context.txt",
+        "r",
+        encoding="utf-8"
+    ) as f:
+
         schema = f.read()
 
     prompt = f"""
@@ -28,6 +44,7 @@ def generate_sql(question):
 Analyze the question carefully.
 
 Determine:
+
 1. What business objective is being requested.
 2. Which tables are required.
 3. Which filters are required.
@@ -50,7 +67,7 @@ SQL:
 
     return sql
 
-def explain_results(question, sql, rows):
+def explain_results(question, rows):
 
     prompt = f"""
 You are a business analytics assistant.
@@ -64,6 +81,7 @@ Database Result:
 Provide a concise professional summary.
 
 Rules:
+
 - Do not mention SQL.
 - Do not mention databases.
 - Do not invent information.
@@ -71,22 +89,37 @@ Rules:
 - Keep response under 75 words.
 """
 
-    return call_qwen(prompt)
+    answer = call_qwen(prompt)
+
+    return clean_text(answer)
 
 def ask_ai(question):
 
     sql = generate_sql(question)
 
-    rows = execute_custom_query(sql)
+    query_result = execute_custom_query(sql)
+
+    if not query_result["success"]:
+
+        return {
+            "success": False,
+            "sql": sql,
+            "rows": [],
+            "answer": None,
+            "error": query_result["error"]
+        }
+
+    rows = query_result["rows"]
 
     answer = explain_results(
         question,
-        sql,
         rows
     )
 
     return {
+        "success": True,
         "sql": sql,
         "rows": rows,
-        "answer": answer
+        "answer": answer,
+        "error": None
     }
