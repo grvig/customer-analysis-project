@@ -1,6 +1,7 @@
 import subprocess
 import re
 from database import execute_query
+from config import REPORT_MODEL
 
 def clean_text(text):
 
@@ -16,7 +17,7 @@ def call_qwen(prompt):
         [
             "ollama",
             "run",
-            "qwen2.5-coder:7b"
+            REPORT_MODEL
         ],
         input=prompt,
         capture_output=True,

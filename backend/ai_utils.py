@@ -1,4 +1,5 @@
 import subprocess
+from config import MODEL_NAME
 import re
 from database import execute_custom_query
 
@@ -16,7 +17,7 @@ def call_qwen(prompt):
         [
             "ollama",
             "run",
-            "qwen2.5-coder:7b"
+            MODEL_NAME
         ],
         input=prompt,
         capture_output=True,
