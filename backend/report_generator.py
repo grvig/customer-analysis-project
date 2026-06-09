@@ -28,7 +28,7 @@ def call_qwen(prompt):
         result.stdout.strip()
     )
 
-def generate_report():
+def generate_complaint_report():
 
     top_complaints = execute_query("""
         SELECT
@@ -115,13 +115,80 @@ Rules:
 - Keep the report under 400 words.
 """
 
-    report = call_qwen(prompt)
+    return call_qwen(prompt)
 
-    return report
+def generate_revenue_report():
+
+    top_services = execute_query("""
+        SELECT
+            service_type,
+            SUM(service_cost) AS revenue
+        FROM services
+        GROUP BY service_type
+        ORDER BY revenue DESC
+        LIMIT 10;
+    """)
+
+    branch_revenue = execute_query("""
+        SELECT
+            c.branch,
+            SUM(s.service_cost) AS revenue
+        FROM services s
+        JOIN calls c
+            ON s.call_id = c.call_id
+        GROUP BY c.branch
+        ORDER BY revenue DESC;
+    """)
+
+    avg_service_cost = execute_query("""
+        SELECT
+            ROUND(AVG(service_cost),2)
+        FROM services;
+    """)
+
+    prompt = f"""
+You are a senior business analyst.
+
+Generate a professional Revenue Analysis Report.
+
+Data:
+
+Top Revenue Services:
+{top_services}
+
+Revenue By Branch:
+{branch_revenue}
+
+Average Service Cost:
+{avg_service_cost}
+
+Report Format:
+
+REVENUE ANALYSIS REPORT
+
+Executive Summary
+
+Top Revenue Services
+
+Branch Revenue Analysis
+
+Average Service Cost
+
+Recommendations
+
+Rules:
+
+- Use only the provided data.
+- Do not invent numbers.
+- Be professional.
+- Keep the report under 400 words.
+"""
+
+    return call_qwen(prompt)
 
 if __name__ == "__main__":
 
-    report = generate_report()
+    report = generate_revenue_report()
 
     print("\n")
     print("=" * 60)
