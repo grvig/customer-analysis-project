@@ -247,9 +247,88 @@ Rules:
 
     return call_qwen(prompt)
 
+def generate_customer_satisfaction_report():
+
+    average_rating = execute_query("""
+        SELECT
+            ROUND(
+                AVG(customer_rating),
+                2
+            )
+        FROM surveys;
+    """)
+
+    return_intent = execute_query("""
+        SELECT
+            will_return,
+            COUNT(*)
+        FROM surveys
+        GROUP BY will_return;
+    """)
+
+    recommendation_intent = execute_query("""
+        SELECT
+            recommend_service,
+            COUNT(*)
+        FROM surveys
+        GROUP BY recommend_service;
+    """)
+
+    feedback_samples = execute_query("""
+        SELECT
+            feedback
+        FROM surveys
+        LIMIT 20;
+    """)
+
+    prompt = f"""
+You are a senior business analyst.
+
+Generate a professional Customer Satisfaction Report.
+
+Data:
+
+Average Customer Rating:
+{average_rating}
+
+Will Return Analysis:
+{return_intent}
+
+Recommendation Analysis:
+{recommendation_intent}
+
+Customer Feedback Samples:
+{feedback_samples}
+
+Report Format:
+
+CUSTOMER SATISFACTION REPORT
+
+Executive Summary
+
+Average Customer Rating
+
+Return Intent Analysis
+
+Recommendation Analysis
+
+Feedback Insights
+
+Recommendations
+
+Rules:
+
+- Use only provided data.
+- Do not invent numbers.
+- Be professional.
+- Keep report under 400 words.
+"""
+
+    return call_qwen(prompt)
+
 if __name__ == "__main__":
 
-    report = generate_branch_report()
+    report = generate_customer_satisfaction_report()
 
     print("\n")
     print("=" * 60)
