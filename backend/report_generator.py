@@ -65,10 +65,7 @@ def generate_complaint_report():
 
     average_rating = execute_query("""
         SELECT
-            ROUND(
-                AVG(customer_rating),
-                2
-            )
+            ROUND(AVG(customer_rating), 2)
         FROM surveys;
     """)
 
@@ -106,13 +103,6 @@ High Priority Issues
 Customer Satisfaction
 
 Recommendations
-
-Rules:
-
-- Use only the provided data.
-- Do not invent numbers.
-- Be professional.
-- Keep the report under 400 words.
 """
 
     return call_qwen(prompt)
@@ -175,20 +165,91 @@ Branch Revenue Analysis
 Average Service Cost
 
 Recommendations
+"""
+
+    return call_qwen(prompt)
+
+def generate_branch_report():
+
+    branch_ratings = execute_query("""
+        SELECT
+            c.branch,
+            ROUND(AVG(s.customer_rating), 2) AS rating
+        FROM surveys s
+        JOIN services sv
+            ON s.service_id = sv.service_id
+        JOIN calls c
+            ON sv.call_id = c.call_id
+        GROUP BY c.branch
+        ORDER BY rating DESC;
+    """)
+
+    branch_revenue = execute_query("""
+        SELECT
+            c.branch,
+            SUM(s.service_cost) AS revenue
+        FROM services s
+        JOIN calls c
+            ON s.call_id = c.call_id
+        GROUP BY c.branch
+        ORDER BY revenue DESC;
+    """)
+
+    branch_complaints = execute_query("""
+        SELECT
+            branch,
+            COUNT(*) AS complaints
+        FROM calls
+        WHERE call_type = 'Complaint'
+        GROUP BY branch
+        ORDER BY complaints DESC;
+    """)
+
+    prompt = f"""
+You are a senior business analyst.
+
+Generate a professional Branch Performance Report.
+
+Data:
+
+Branch Ratings:
+{branch_ratings}
+
+Branch Revenue:
+{branch_revenue}
+
+Branch Complaints:
+{branch_complaints}
+
+Report Format:
+
+BRANCH PERFORMANCE REPORT
+
+Executive Summary
+
+Top Rated Branches
+
+Revenue Performance
+
+Complaint Analysis
+
+Overall Branch Assessment
+
+Recommendations
 
 Rules:
 
-- Use only the provided data.
+- Use only provided data.
 - Do not invent numbers.
 - Be professional.
-- Keep the report under 400 words.
+- Keep report under 400 words.
 """
 
     return call_qwen(prompt)
 
 if __name__ == "__main__":
 
-    report = generate_revenue_report()
+    report = generate_branch_report()
 
     print("\n")
     print("=" * 60)
