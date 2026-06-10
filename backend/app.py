@@ -1,13 +1,10 @@
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from database import execute_query, execute_custom_query
 from ai_utils import ask_ai
-from report_generator import (
-    generate_complaint_report,
-    generate_revenue_report,
-    generate_branch_report,
-    generate_customer_satisfaction_report
-)
+from report_generator import generate_report
+from pdf_generator import create_pdf
 
 app = FastAPI()
 
@@ -92,25 +89,11 @@ def ask_question(request: AskRequest):
 @app.post("/report")
 def create_report(request: ReportRequest):
 
-    report_type = request.report_type.lower()
+    report = generate_report(
+        request.report_type
+    )
 
-    if report_type == "complaint":
-
-        report = generate_complaint_report()
-
-    elif report_type == "revenue":
-
-        report = generate_revenue_report()
-
-    elif report_type == "branch":
-
-        report = generate_branch_report()
-
-    elif report_type == "customer_satisfaction":
-
-        report = generate_customer_satisfaction_report()
-
-    else:
+    if report is None:
 
         return {
             "success": False,
@@ -120,7 +103,51 @@ def create_report(request: ReportRequest):
 
     return {
         "success": True,
-        "report_type": report_type,
+        "report_type": request.report_type,
         "report": report,
         "error": None
     }
+
+@app.post("/report/pdf")
+def create_report_pdf(request: ReportRequest):
+
+    report = generate_report(
+        request.report_type
+    )
+
+    if report is None:
+
+        return {
+            "success": False,
+            "file": None,
+            "error": "Invalid report type"
+        }
+
+    filename = (
+        request.report_type.lower()
+        + "_report.pdf"
+    )
+
+    create_pdf(
+        report,
+        filename
+    )
+
+    return {
+        "success": True,
+        "report_type": request.report_type,
+        "file": filename,
+        "download_url": f"/download-report/{filename}",
+        "error": None
+    }
+
+@app.get("/download-report/{filename}")
+def download_report(filename: str):
+
+    file_path = f"reports/{filename}"
+
+    return FileResponse(
+        path=file_path,
+        filename=filename,
+        media_type="application/pdf"
+    )

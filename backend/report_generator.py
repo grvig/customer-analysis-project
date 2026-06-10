@@ -327,9 +327,29 @@ Rules:
 
     return call_qwen(prompt)
 
+def generate_report(report_type):
+
+    report_type = report_type.lower()
+
+    if report_type == "complaint":
+        return generate_complaint_report()
+
+    elif report_type == "revenue":
+        return generate_revenue_report()
+
+    elif report_type == "branch":
+        return generate_branch_report()
+
+    elif report_type == "customer_satisfaction":
+        return generate_customer_satisfaction_report()
+
+    return None
+
 if __name__ == "__main__":
 
-    report = generate_customer_satisfaction_report()
+    report = generate_report(
+    "complaint"
+)
 
     print("\n")
     print("=" * 60)
