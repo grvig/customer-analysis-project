@@ -15,6 +15,7 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
+  // eslint-disable-next-line no-undef
   if (process.platform !== "darwin") {
     app.quit();
   }
