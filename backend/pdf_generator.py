@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 from reportlab.platypus import (
     SimpleDocTemplate,
@@ -35,7 +36,39 @@ def clean_report_text(text):
         text
     )
 
-    return text
+    text = re.sub(
+        r'Prepared by:.*',
+        '',
+        text,
+        flags=re.DOTALL
+    )
+
+    return text.strip()
+
+def add_page_number(canvas, doc):
+
+    page_num = canvas.getPageNumber()
+
+    canvas.saveState()
+
+    canvas.setFont(
+        "Helvetica",
+        9
+    )
+
+    canvas.drawString(
+        50,
+        30,
+        "MYTVS Customer Analysis Dashboard"
+    )
+
+    canvas.drawRightString(
+        550,
+        30,
+        f"Page {page_num}"
+    )
+
+    canvas.restoreState()
 
 def create_pdf(report_text, filename):
 
@@ -48,7 +81,7 @@ def create_pdf(report_text, filename):
         leftMargin=50,
         rightMargin=50,
         topMargin=50,
-        bottomMargin=50
+        bottomMargin=60
     )
 
     styles = getSampleStyleSheet()
@@ -60,6 +93,15 @@ def create_pdf(report_text, filename):
         leading=28,
         alignment=TA_CENTER,
         spaceAfter=20
+    )
+
+    metadata_style = ParagraphStyle(
+        "Metadata",
+        parent=styles["BodyText"],
+        fontSize=10,
+        leading=14,
+        alignment=TA_CENTER,
+        spaceAfter=15
     )
 
     heading_style = ParagraphStyle(
@@ -114,6 +156,9 @@ def create_pdf(report_text, filename):
 
     first_heading_done = False
 
+    report_title = ""
+    report_type = ""
+
     for line in lines:
 
         line = line.strip()
@@ -123,6 +168,14 @@ def create_pdf(report_text, filename):
 
         if not first_heading_done:
 
+            report_title = line
+
+            report_type = (
+                line.title()
+                .replace("Report", "")
+                .strip()
+            )
+
             content.append(
                 Paragraph(
                     line,
@@ -130,8 +183,22 @@ def create_pdf(report_text, filename):
                 )
             )
 
+            generated_date = datetime.now().strftime(
+                "%d-%b-%Y %H:%M"
+            )
+
             content.append(
-                Spacer(1, 15)
+                Paragraph(
+                    f"""
+                    Generated On: {generated_date}<br/>
+                    Report Type: {report_type}
+                    """,
+                    metadata_style
+                )
+            )
+
+            content.append(
+                Spacer(1, 10)
             )
 
             first_heading_done = True
@@ -178,6 +245,10 @@ def create_pdf(report_text, filename):
             )
         )
 
-    pdf.build(content)
+    pdf.build(
+        content,
+        onFirstPage=add_page_number,
+        onLaterPages=add_page_number
+    )
 
     return filename

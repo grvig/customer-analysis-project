@@ -344,3 +344,189 @@ ON s.call_id = c.call_id
 GROUP BY c.branch
 ORDER BY revenue DESC
 LIMIT 1;
+
+Business Metrics
+
+Complaint Volume
+
+Complaint volume refers to:
+
+COUNT(*)
+
+FROM calls
+
+WHERE call_type = 'Complaint'
+
+Customer Satisfaction
+
+Customer satisfaction refers to:
+
+AVG(surveys.customer_rating)
+
+Revenue
+
+Revenue refers to:
+
+SUM(services.service_cost)
+
+Branch Performance
+
+Branch performance may involve a combination of:
+
+* complaint volume
+* average customer rating
+* revenue generated
+
+Agent Performance
+
+Agent performance refers to:
+
+COUNT(calls.call_id)
+
+GROUP BY agents.agent_name
+
+Vehicle Reliability
+
+Vehicle reliability may be evaluated using:
+
+* complaint frequency
+* issue_category
+* resolution_days
+
+Time Analysis Guidelines
+
+call_date represents customer interaction date.
+
+service_date represents service completion date.
+
+registration_date represents customer onboarding date.
+
+purchase_date represents vehicle purchase date.
+
+When the user asks for:
+
+* trends
+* monthly analysis
+* yearly analysis
+* growth
+* decline
+* patterns over time
+
+consider grouping by date fields.
+
+Examples:
+
+DATE_TRUNC('month', call_date)
+
+DATE_TRUNC('month', service_date)
+
+DATE_TRUNC('year', call_date)
+
+DATE_TRUNC('year', service_date)
+
+Common Business Analysis Requests
+
+Top Complaints
+
+Use:
+
+GROUP BY issue_category
+
+Complaint Trends
+
+Use:
+
+call_date
+
+Revenue Analysis
+
+Use:
+
+SUM(service_cost)
+
+Branch Comparison
+
+Use:
+
+branch
+
+Customer Satisfaction Analysis
+
+Use:
+
+AVG(customer_rating)
+
+Vehicle Analysis
+
+Use:
+
+vehicles.make
+
+vehicles.model
+
+issue_category
+
+Agent Analysis
+
+Use:
+
+agents.agent_name
+
+COUNT(calls.call_id)
+
+Customer Retention Analysis
+
+Use:
+
+surveys.will_return
+
+Customer Recommendation Analysis
+
+Use:
+
+surveys.recommend_service
+
+Report Generation Guidelines
+
+When generating reports, identify the relevant metrics first.
+
+Examples:
+
+Complaint Report
+
+Use:
+
+* complaint volume
+* complaint categories
+* branch complaint analysis
+* high priority complaints
+* customer satisfaction
+
+Revenue Report
+
+Use:
+
+* revenue by service type
+* revenue by branch
+* average service cost
+
+Branch Performance Report
+
+Use:
+
+* branch ratings
+* branch revenue
+* branch complaints
+
+Customer Satisfaction Report
+
+Use:
+
+* average customer rating
+* will_return analysis
+* recommend_service analysis
+* customer feedback
+
+Always use the simplest query that answers the business question.
+
+Avoid unnecessary joins and unnecessary columns.

@@ -57,17 +57,15 @@ def generate_sql(question):
     prompt = f"""
 {schema}
 
-Analyze the question carefully.
+Convert the following question into a PostgreSQL SELECT query.
 
-Determine:
+Return ONLY SQL.
 
-1. What business objective is being requested.
-2. Which tables are required.
-3. Which filters are required.
-4. Which joins are required.
-5. Whether complaint-related filtering is needed.
+Do not explain.
 
-Then generate the PostgreSQL query.
+Do not use markdown.
+
+Do not include comments.
 
 Question:
 {question}
@@ -80,6 +78,10 @@ SQL:
     sql = sql.replace("```sql", "")
     sql = sql.replace("```", "")
     sql = sql.strip()
+
+    sql = sql.replace("\n", " ")
+    sql = sql.replace("\r", " ")
+    sql = " ".join(sql.split())
 
     return sql
 
