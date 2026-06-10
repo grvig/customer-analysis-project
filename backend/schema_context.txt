@@ -530,3 +530,54 @@ Use:
 Always use the simplest query that answers the business question.
 
 Avoid unnecessary joins and unnecessary columns.
+
+Important Join Patterns
+
+Revenue By Branch
+
+services does NOT contain branch.
+
+To calculate revenue by branch:
+
+services
+JOIN calls
+ON services.call_id = calls.call_id
+
+Use:
+
+SUM(services.service_cost)
+
+GROUP BY calls.branch
+
+Customer Rating By Branch
+
+surveys does NOT contain branch.
+
+To calculate ratings by branch:
+
+surveys
+JOIN services
+ON surveys.service_id = services.service_id
+
+JOIN calls
+ON services.call_id = calls.call_id
+
+Use:
+
+AVG(surveys.customer_rating)
+
+GROUP BY calls.branch
+
+Agent Analysis
+
+calls.agent_id joins to agents.agent_id
+
+Vehicle Analysis
+
+calls.vehicle_id joins to vehicles.vehicle_id
+
+Customer Analysis
+
+calls.customer_id joins to customers.customer_id
+
+Always verify that requested columns exist in the table before generating SQL.

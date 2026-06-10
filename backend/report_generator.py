@@ -119,6 +119,15 @@ High Priority Issues
 Customer Satisfaction
 
 Recommendations
+Rules:
+- Use only provided data.
+- Do not invent numbers.
+- Be professional.
+- Do not include "Prepared By".
+- Do not include signatures.
+- Do not include contact information.
+- Do not include dates.
+- End the report after Recommendations.
 """
 
     return call_qwen(prompt)
@@ -181,6 +190,15 @@ Branch Revenue Analysis
 Average Service Cost
 
 Recommendations
+Rules:
+- Use only provided data.
+- Do not invent numbers.
+- Be professional.
+- Do not include "Prepared By".
+- Do not include signatures.
+- Do not include contact information.
+- Do not include dates.
+- End the report after Recommendations.
 """
 
     return call_qwen(prompt)
@@ -258,7 +276,11 @@ Rules:
 - Use only provided data.
 - Do not invent numbers.
 - Be professional.
-- Keep report under 400 words.
+- Do not include "Prepared By".
+- Do not include signatures.
+- Do not include contact information.
+- Do not include dates.
+- End the report after Recommendations.
 """
 
     return call_qwen(prompt)
@@ -337,7 +359,11 @@ Rules:
 - Use only provided data.
 - Do not invent numbers.
 - Be professional.
-- Keep report under 400 words.
+- Do not include "Prepared By".
+- Do not include signatures.
+- Do not include contact information.
+- Do not include dates.
+- End the report after Recommendations.
 """
 
     return call_qwen(prompt)
