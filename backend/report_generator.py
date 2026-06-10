@@ -13,21 +13,36 @@ def clean_text(text):
 
 def call_qwen(prompt):
 
-    result = subprocess.run(
-        [
-            "ollama",
-            "run",
-            REPORT_MODEL
-        ],
-        input=prompt,
-        capture_output=True,
-        text=True,
-        encoding="utf-8"
-    )
+    try:
 
-    return clean_text(
-        result.stdout.strip()
-    )
+        result = subprocess.run(
+            [
+                "ollama",
+                "run",
+                REPORT_MODEL
+            ],
+            input=prompt,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=180
+        )
+
+        if result.returncode != 0:
+
+            raise Exception(
+                result.stderr
+            )
+
+        return clean_text(
+            result.stdout.strip()
+        )
+
+    except Exception as e:
+
+        raise Exception(
+            f"Report model error: {str(e)}"
+        )
 
 def generate_complaint_report():
 
@@ -329,21 +344,29 @@ Rules:
 
 def generate_report(report_type):
 
-    report_type = report_type.lower()
+    try:
 
-    if report_type == "complaint":
-        return generate_complaint_report()
+        report_type = report_type.lower()
 
-    elif report_type == "revenue":
-        return generate_revenue_report()
+        if report_type == "complaint":
+            return generate_complaint_report()
 
-    elif report_type == "branch":
-        return generate_branch_report()
+        elif report_type == "revenue":
+            return generate_revenue_report()
 
-    elif report_type == "customer_satisfaction":
-        return generate_customer_satisfaction_report()
+        elif report_type == "branch":
+            return generate_branch_report()
 
-    return None
+        elif report_type == "customer_satisfaction":
+            return generate_customer_satisfaction_report()
+
+        return None
+
+    except Exception as e:
+
+        raise Exception(
+            f"Report generation failed: {str(e)}"
+        )
 
 if __name__ == "__main__":
 

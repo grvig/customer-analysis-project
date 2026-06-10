@@ -13,21 +13,36 @@ def clean_text(text):
 
 def call_qwen(prompt):
 
-    result = subprocess.run(
-        [
-            "ollama",
-            "run",
-            MODEL_NAME
-        ],
-        input=prompt,
-        capture_output=True,
-        text=True,
-        encoding="utf-8"
-    )
+    try:
 
-    return clean_text(
-        result.stdout.strip()
-    )
+        result = subprocess.run(
+            [
+                "ollama",
+                "run",
+                MODEL_NAME
+            ],
+            input=prompt,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=180
+        )
+
+        if result.returncode != 0:
+
+            raise Exception(
+                result.stderr
+            )
+
+        return clean_text(
+            result.stdout.strip()
+        )
+
+    except Exception as e:
+
+        raise Exception(
+            f"AI model error: {str(e)}"
+        )
 
 def generate_sql(question):
 
@@ -96,31 +111,45 @@ Rules:
 
 def ask_ai(question):
 
-    sql = generate_sql(question)
+    try:
 
-    query_result = execute_custom_query(sql)
+        sql = generate_sql(question)
 
-    if not query_result["success"]:
+        query_result = execute_custom_query(
+            sql
+        )
+
+        if not query_result["success"]:
+
+            return {
+                "success": False,
+                "sql": sql,
+                "rows": [],
+                "answer": None,
+                "error": query_result["error"]
+            }
+
+        rows = query_result["rows"]
+
+        answer = explain_results(
+            question,
+            rows
+        )
+
+        return {
+            "success": True,
+            "sql": sql,
+            "rows": rows,
+            "answer": answer,
+            "error": None
+        }
+
+    except Exception as e:
 
         return {
             "success": False,
-            "sql": sql,
+            "sql": None,
             "rows": [],
             "answer": None,
-            "error": query_result["error"]
+            "error": str(e)
         }
-
-    rows = query_result["rows"]
-
-    answer = explain_results(
-        question,
-        rows
-    )
-
-    return {
-        "success": True,
-        "sql": sql,
-        "rows": rows,
-        "answer": answer,
-        "error": None
-    }
