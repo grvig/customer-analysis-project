@@ -1,0 +1,303 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --white: #ffffff;
+  --background: #f5f7fb;
+
+  --blue-primary: #0056a6;
+  --blue-secondary: #0d6efd;
+  --blue-light: #eaf3ff;
+
+  --orange-primary: #f58220;
+  --orange-secondary: #ff9f43;
+  --orange-light: #fff3e8;
+
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+
+  --border: #e2e8f0;
+
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  --radius: 16px;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--background);
+  color: var(--text-primary);
+}
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ==========================
+   SIDEBAR
+========================== */
+
+.sidebar {
+  width: 260px;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  padding: 30px 20px;
+  box-shadow: var(--shadow);
+}
+
+.sidebar h2 {
+  color: var(--blue-primary);
+  margin-bottom: 40px;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: var(--text-primary);
+  padding: 14px 18px;
+  border-radius: 12px;
+  transition: all 0.25s ease;
+  font-weight: 500;
+}
+
+.sidebar a:hover {
+  background: var(--blue-light);
+  color: var(--blue-primary);
+}
+
+.sidebar a.active {
+  background: var(--blue-primary);
+  color: white;
+}
+
+/* ==========================
+   MAIN CONTENT
+========================== */
+
+.main-content {
+  flex: 1;
+  padding: 30px;
+}
+
+/* ==========================
+   HEADER
+========================== */
+
+.header {
+  background: white;
+  border-radius: var(--radius);
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow);
+}
+
+.header h1 {
+  color: var(--blue-primary);
+  font-size: 2rem;
+}
+
+/* ==========================
+   SUMMARY CARDS
+========================== */
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+}
+
+.summary-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 5px;
+  width: 100%;
+  background: var(--blue-primary);
+  border-radius: 16px 16px 0 0;
+}
+
+.summary-card h3 {
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.summary-card h2 {
+  color: var(--text-primary);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+/* ==========================
+   CHARTS
+========================== */
+
+.charts-grid {
+  display: grid;
+  gap: 24px;
+  margin-top: 30px;
+}
+
+.chart-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.chart-card h3 {
+  color: var(--blue-primary);
+  margin-bottom: 20px;
+}
+
+/* ==========================
+   INPUTS
+========================== */
+
+input,
+select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  background: white;
+  font-size: 15px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--blue-primary);
+}
+
+/* ==========================
+   BUTTONS
+========================== */
+
+button {
+  background: var(--blue-primary);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-right: 10px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #00488c;
+}
+
+button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* Optional Orange Button */
+
+.orange-btn {
+  background: var(--orange-primary);
+}
+
+.orange-btn:hover {
+  background: #d96f11;
+}
+
+/* ==========================
+   RESULT BOX
+========================== */
+
+.result-box {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-top: 25px;
+}
+
+.result-box h3 {
+  color: var(--orange-primary);
+  margin-top: 15px;
+  margin-bottom: 8px;
+}
+
+pre {
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+/* ==========================
+   REPORT AREA
+========================== */
+
+textarea {
+  width: 100%;
+  min-height: 400px;
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  resize: vertical;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 220px;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+}
