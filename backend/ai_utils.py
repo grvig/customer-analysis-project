@@ -100,11 +100,17 @@ Provide a concise professional summary.
 
 Rules:
 
+Rules:
+
 - Do not mention SQL.
 - Do not mention databases.
 - Do not invent information.
 - Only discuss information visible in the results.
-- Keep response under 75 words.
+- Do not assume currency symbols.
+- Do not create numbered lists.
+- Summarize the key insight only.
+- Keep response under 50 words.
+- Use professional business language.
 """
 
     answer = call_qwen(prompt)
