@@ -120,14 +120,21 @@ Customer Satisfaction
 
 Recommendations
 Rules:
+
 - Use only provided data.
 - Do not invent numbers.
+- Do not invent metrics.
+- Do not invent percentages.
+- Do not assume currency symbols.
+- Do not create fake statistics.
 - Be professional.
+- Use concise business language.
 - Do not include "Prepared By".
 - Do not include signatures.
 - Do not include contact information.
 - Do not include dates.
 - End the report after Recommendations.
+- Keep report under 400 words.
 """
 
     return call_qwen(prompt)
@@ -191,14 +198,21 @@ Average Service Cost
 
 Recommendations
 Rules:
+
 - Use only provided data.
 - Do not invent numbers.
+- Do not invent metrics.
+- Do not invent percentages.
+- Do not assume currency symbols.
+- Do not create fake statistics.
 - Be professional.
+- Use concise business language.
 - Do not include "Prepared By".
 - Do not include signatures.
 - Do not include contact information.
 - Do not include dates.
 - End the report after Recommendations.
+- Keep report under 400 words.
 """
 
     return call_qwen(prompt)
@@ -275,12 +289,18 @@ Rules:
 
 - Use only provided data.
 - Do not invent numbers.
+- Do not invent metrics.
+- Do not invent percentages.
+- Do not assume currency symbols.
+- Do not create fake statistics.
 - Be professional.
+- Use concise business language.
 - Do not include "Prepared By".
 - Do not include signatures.
 - Do not include contact information.
 - Do not include dates.
 - End the report after Recommendations.
+- Keep report under 400 words.
 """
 
     return call_qwen(prompt)
@@ -358,12 +378,18 @@ Rules:
 
 - Use only provided data.
 - Do not invent numbers.
+- Do not invent metrics.
+- Do not invent percentages.
+- Do not assume currency symbols.
+- Do not create fake statistics.
 - Be professional.
+- Use concise business language.
 - Do not include "Prepared By".
 - Do not include signatures.
 - Do not include contact information.
 - Do not include dates.
 - End the report after Recommendations.
+- Keep report under 400 words.
 """
 
     return call_qwen(prompt)
