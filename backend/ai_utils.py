@@ -117,6 +117,52 @@ Rules:
 
     return clean_text(answer)
 
+def regenerate_sql(
+    question,
+    failed_sql,
+    error_message
+):
+
+    with open(
+        "schema_context.txt",
+        "r",
+        encoding="utf-8"
+    ) as f:
+
+        schema = f.read()
+
+    prompt = f"""
+{schema}
+
+The previous SQL failed.
+
+Question:
+{question}
+
+Failed SQL:
+{failed_sql}
+
+Database Error:
+{error_message}
+
+Generate a corrected PostgreSQL SELECT query.
+
+Return ONLY SQL.
+"""
+
+    sql = call_qwen(prompt)
+
+    sql = sql.replace("```sql", "")
+    sql = sql.replace("```", "")
+    sql = sql.strip()
+
+    sql = sql.replace("\n", " ")
+    sql = sql.replace("\r", " ")
+    sql = " ".join(sql.split())
+
+
+    return sql
+
 def ask_ai(question):
 
     try:
@@ -126,6 +172,16 @@ def ask_ai(question):
         query_result = execute_custom_query(
             sql
         )
+
+        if not query_result["success"]:
+
+            sql = regenerate_sql(
+                question,
+                sql,
+                query_result["error"]
+            )
+
+            query_result = execute_custom_query(sql)
 
         if not query_result["success"]:
 
