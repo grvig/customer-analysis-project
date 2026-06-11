@@ -178,8 +178,8 @@ def create_pdf(report_text, filename):
 
             content.append(
                 Paragraph(
-                    line,
-                    title_style
+                f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+                body_style
                 )
             )
 
