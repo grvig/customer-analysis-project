@@ -581,3 +581,16 @@ Customer Analysis
 calls.customer_id joins to customers.customer_id
 
 Always verify that requested columns exist in the table before generating SQL.
+
+Average Calculations
+
+When calculating averages for analytics, dashboards, or reports,
+prefer:
+
+ROUND(AVG(column_name), 2)
+
+instead of:
+
+AVG(column_name)
+
+unless the user explicitly requests full precision.

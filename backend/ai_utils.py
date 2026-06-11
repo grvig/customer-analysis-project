@@ -2,6 +2,7 @@ import subprocess
 from config import MODEL_NAME
 import re
 from database import execute_custom_query
+MAX_SQL_RETRIES = 1
 
 def clean_text(text):
 
@@ -107,6 +108,7 @@ Rules:
 - Do not invent information.
 - Only discuss information visible in the results.
 - Do not assume currency symbols.
+- Do not infer units, currencies, percentages, or ratings.
 - Do not create numbered lists.
 - Summarize the key insight only.
 - Keep response under 50 words.
@@ -173,13 +175,16 @@ def ask_ai(question):
             sql
         )
 
-        if not query_result["success"]:
+        for _ in range(MAX_SQL_RETRIES):
+            if query_result["success"]:
+                break
 
             sql = regenerate_sql(
                 question,
                 sql,
                 query_result["error"]
             )
+            query_result = execute_custom_query(sql)
 
             query_result = execute_custom_query(sql)
 
