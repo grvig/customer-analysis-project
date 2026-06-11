@@ -2,6 +2,7 @@ import subprocess
 from config import MODEL_NAME
 import re
 from database import execute_custom_query
+import time
 MAX_SQL_RETRIES = 1
 
 def clean_text(text):
@@ -101,8 +102,6 @@ Provide a concise professional summary.
 
 Rules:
 
-Rules:
-
 - Do not mention SQL.
 - Do not mention databases.
 - Do not invent information.
@@ -166,6 +165,7 @@ Return ONLY SQL.
     return sql
 
 def ask_ai(question):
+    start_time = time.time()
 
     try:
 
@@ -186,15 +186,19 @@ def ask_ai(question):
             )
             query_result = execute_custom_query(sql)
 
-            query_result = execute_custom_query(sql)
 
         if not query_result["success"]:
+            execution_time = round(
+                time.time() - start_time,
+                2
+            )
 
             return {
                 "success": False,
                 "sql": sql,
                 "rows": [],
                 "answer": None,
+                "execution_time": execution_time,
                 "error": query_result["error"]
             }
 
@@ -204,21 +208,30 @@ def ask_ai(question):
             question,
             rows
         )
+        execution_time = round(
+            time.time() - start_time,
+            2
+        )
 
         return {
             "success": True,
             "sql": sql,
             "rows": rows,
             "answer": answer,
+            "execution_time": execution_time,
             "error": None
         }
 
     except Exception as e:
-
+        execution_time = round(
+        time.time() - start_time,
+        2
+    )
         return {
             "success": False,
             "sql": None,
             "rows": [],
             "answer": None,
+            "execution_time": execution_time,
             "error": str(e)
         }
