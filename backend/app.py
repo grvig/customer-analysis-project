@@ -5,6 +5,7 @@ from database import execute_query, execute_custom_query
 from ai_utils import ask_ai
 from report_generator import generate_report
 from pdf_generator import create_pdf
+from datetime import datetime
 import time
 
 app = FastAPI()
@@ -131,10 +132,15 @@ def create_report_pdf(request: ReportRequest):
             "file": None,
             "error": "Invalid report type"
         }
+    timestamp = datetime.now().strftime(
+        "%Y%m%d_%H%M%S"
+    )
 
     filename = (
         request.report_type.lower()
-        + "_report.pdf"
+        + "_report_"
+        + timestamp
+        + ".pdf"
     )
 
     create_pdf(
