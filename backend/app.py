@@ -5,6 +5,7 @@ from database import execute_query, execute_custom_query
 from ai_utils import ask_ai
 from report_generator import generate_report
 from pdf_generator import create_pdf
+import time
 
 app = FastAPI()
 
@@ -88,6 +89,7 @@ def ask_question(request: AskRequest):
 
 @app.post("/report")
 def create_report(request: ReportRequest):
+    start_time = time.time()
 
     report = generate_report(
         request.report_type
@@ -100,16 +102,23 @@ def create_report(request: ReportRequest):
             "report": None,
             "error": "Invalid report type"
         }
+        
+    generation_time = round(
+        time.time() - start_time,
+        2
+    )
 
     return {
         "success": True,
         "report_type": request.report_type,
         "report": report,
+        "generation_time": generation_time,
         "error": None
     }
 
 @app.post("/report/pdf")
 def create_report_pdf(request: ReportRequest):
+    start_time = time.time()
 
     report = generate_report(
         request.report_type
@@ -132,12 +141,18 @@ def create_report_pdf(request: ReportRequest):
         report,
         filename
     )
+    
+    generation_time = round(
+        time.time() - start_time,
+        2
+    )
 
     return {
         "success": True,
         "report_type": request.report_type,
         "file": filename,
         "download_url": f"/download-report/{filename}",
+        "generation_time": generation_time,
         "error": None
     }
 
