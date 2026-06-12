@@ -91,19 +91,43 @@ def ask_question(request: AskRequest):
 @app.post("/report")
 def create_report(request: ReportRequest):
     start_time = time.time()
+    report_type = (
+        request.report_type
+        .lower()
+        .strip()
+    )
+
+    aliases = {
+        "complaint": "complaint",
+        "complaints": "complaint",
+        "complaint report": "complaint",
+
+        "revenue": "revenue",
+        "revenue report": "revenue",
+
+        "branch": "branch",
+        "branch report": "branch",
+
+        "customer satisfaction": "customer_satisfaction",
+        "customer satisfaction report": "customer_satisfaction"
+    }
+
+    report_type = aliases.get(
+        report_type,
+        report_type
+    )
 
     report = generate_report(
-        request.report_type
+        report_type
     )
 
     if report is None:
-
         return {
             "success": False,
             "report": None,
             "error": "Invalid report type"
         }
-        
+
     generation_time = round(
         time.time() - start_time,
         2
@@ -120,18 +144,43 @@ def create_report(request: ReportRequest):
 @app.post("/report/pdf")
 def create_report_pdf(request: ReportRequest):
     start_time = time.time()
+    report_type = (
+        request.report_type
+        .lower()
+        .strip()
+    )
+
+    aliases = {
+        "complaint": "complaint",
+        "complaints": "complaint",
+        "complaint report": "complaint",
+
+        "revenue": "revenue",
+        "revenue report": "revenue",
+
+        "branch": "branch",
+        "branch report": "branch",
+
+        "customer satisfaction": "customer_satisfaction",
+        "customer satisfaction report": "customer_satisfaction"
+    }
+
+    report_type = aliases.get(
+        report_type,
+        report_type
+    )
 
     report = generate_report(
-        request.report_type
+        report_type
     )
 
     if report is None:
-
         return {
             "success": False,
             "file": None,
             "error": "Invalid report type"
         }
+
     timestamp = datetime.now().strftime(
         "%Y%m%d_%H%M%S"
     )
@@ -147,7 +196,7 @@ def create_report_pdf(request: ReportRequest):
         report,
         filename
     )
-    
+
     generation_time = round(
         time.time() - start_time,
         2
