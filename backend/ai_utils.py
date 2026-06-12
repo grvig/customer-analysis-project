@@ -112,6 +112,9 @@ Rules:
 - Summarize the key insight only.
 - Keep response under 50 words.
 - Use professional business language.
+- Mention only the most important findings.
+- Avoid repeating all rows from the result.
+- If many rows are returned, summarize overall trends.
 """
 
     answer = call_qwen(prompt)
