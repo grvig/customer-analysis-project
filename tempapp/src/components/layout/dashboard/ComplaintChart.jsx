@@ -38,19 +38,13 @@ const renderActiveShape = (props) => {
         startAngle={startAngle}
         endAngle={endAngle}
         fill={fill}
-        stroke="#F58220"
-        strokeWidth={4}
       />
     </g>
   );
 };
 
 export default function ComplaintChart() {
-  const [activeIndex, setActiveIndex] = useState(null);
-
-  const handleClick = (_, index) => {
-    setActiveIndex(index);
-  };
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   return (
     <div className="chart-card">
@@ -64,7 +58,8 @@ export default function ComplaintChart() {
             outerRadius={100}
             activeIndex={activeIndex}
             activeShape={renderActiveShape}
-            onClick={handleClick}
+            onMouseEnter={(_, index) => setActiveIndex(index)}
+            onMouseLeave={() => setActiveIndex(-1)}
             label
           >
             {complaintData.map((entry, index) => (
