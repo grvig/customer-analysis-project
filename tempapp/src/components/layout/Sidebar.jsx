@@ -3,7 +3,13 @@ import { NavLink } from "react-router-dom";
 export default function Sidebar() {
   return (
     <div className="sidebar">
-      <h2>Customer Analytics</h2>
+      <div className="sidebar-brand">
+        <h2>myTVS</h2>
+
+        <p className="brand-subtitle">
+          Customer Analytics Platform
+        </p>
+      </div>
 
       <nav>
         <NavLink to="/">Dashboard</NavLink>
