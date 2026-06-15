@@ -221,3 +221,23 @@ def download_report(filename: str):
         filename=filename,
         media_type="application/pdf"
     )
+@app.get("/dashboard")
+def dashboard():
+
+    return {
+        "customers": execute_query(
+            "SELECT COUNT(*) FROM customers;"
+        )[0][0],
+
+        "calls": execute_query(
+            "SELECT COUNT(*) FROM calls;"
+        )[0][0],
+
+        "services": execute_query(
+            "SELECT COUNT(*) FROM services;"
+        )[0][0],
+
+        "surveys": execute_query(
+            "SELECT COUNT(*) FROM surveys;"
+        )[0][0]
+    }
