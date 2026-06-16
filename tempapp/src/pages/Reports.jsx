@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   generateReport,
   generateCustomReport,
+  downloadPdfReport,
 } from "../services/reportService";
 
 export default function Reports() {
@@ -39,6 +40,18 @@ export default function Reports() {
       setReport("Failed to generate custom report. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+  const handleDownloadPdf = async () => {
+    try {
+      const data = await downloadPdfReport(type);
+
+      window.open(
+        `http://localhost:8000${data.download_url}`,
+        "_blank"
+      );
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -85,7 +98,10 @@ export default function Reports() {
           : "Generate Report"}
       </button>
 
-      <button disabled>
+      <button
+        onClick={handleDownloadPdf}
+        disabled={loading}
+      >
         Download PDF
       </button>
 

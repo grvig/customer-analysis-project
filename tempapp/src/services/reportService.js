@@ -22,3 +22,13 @@ export const generateCustomReport = async (question) => {
 
   return response.data;
 };
+export const downloadPdfReport = async (type) => {
+  const response = await axios.post(
+    `${API_BASE_URL}/report/pdf`,
+    {
+      report_type: type,
+    }
+  );
+
+  return response.data;
+};
