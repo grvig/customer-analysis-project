@@ -7,12 +7,24 @@ from report_generator import generate_report
 from pdf_generator import create_pdf
 from datetime import datetime
 import time
+from fastapi.middleware.cors import CORSMiddleware
+
+
 from report_generator import (
     generate_report,
     generate_custom_report
 )
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 class QueryRequest(BaseModel):
     sql: str
