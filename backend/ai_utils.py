@@ -167,6 +167,47 @@ Return ONLY SQL.
 
     return sql
 
+def get_query_results(question):
+
+    sql = generate_sql(
+        question
+    )
+
+    query_result = execute_custom_query(
+        sql
+    )
+
+    for _ in range(MAX_SQL_RETRIES):
+
+        if query_result["success"]:
+            break
+
+        sql = regenerate_sql(
+            question,
+            sql,
+            query_result["error"]
+        )
+
+        query_result = execute_custom_query(
+            sql
+        )
+
+    if not query_result["success"]:
+
+        return {
+            "success": False,
+            "sql": sql,
+            "rows": [],
+            "error": query_result["error"]
+        }
+
+    return {
+        "success": True,
+        "sql": sql,
+        "rows": query_result["rows"],
+        "error": None
+    }
+
 def ask_ai(question):
     start_time = time.time()
 

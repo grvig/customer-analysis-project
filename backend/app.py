@@ -7,6 +7,10 @@ from report_generator import generate_report
 from pdf_generator import create_pdf
 from datetime import datetime
 import time
+from report_generator import (
+    generate_report,
+    generate_custom_report
+)
 
 app = FastAPI()
 
@@ -18,6 +22,9 @@ class AskRequest(BaseModel):
 
 class ReportRequest(BaseModel):
     report_type: str
+    
+class CustomReportRequest(BaseModel):
+    question: str
 
 @app.get("/")
 def home():
@@ -252,4 +259,20 @@ def version():
 
     return {
         "version": "1.0.0"
+    }
+
+@app.post("/report/custom")
+def custom_report(
+    request: CustomReportRequest
+):
+
+    report = generate_custom_report(
+        request.question
+    )
+
+    return {
+        "success": True,
+        "question": request.question,
+        "report": report,
+        "error": None
     }

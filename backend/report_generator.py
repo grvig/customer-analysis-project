@@ -2,7 +2,7 @@ import subprocess
 import re
 from database import execute_query
 from config import REPORT_MODEL
-from ai_utils import generate_sql
+from ai_utils import get_query_results
 from database import execute_custom_query
 
 def clean_text(text):
@@ -398,16 +398,8 @@ Rules:
 
 def generate_custom_report(question):
 
-    sql = generate_sql(
-        question
-    )
-    
-    print("\nGenerated SQL:")
-    print(sql)
-    print("\n")
-
-    result = execute_custom_query(
-        sql
+    result = get_query_results(
+    question
     )
 
     if not result["success"]:
@@ -458,6 +450,10 @@ Rules:
 - Do not infer reasons behind trends.
 - Do not assume operational problems.
 - Discuss only patterns visible in the data.
+- Do not calculate percentages unless explicitly present in the data.
+- Do not speculate on causes.
+- Do not infer operational issues.
+- Discuss only facts visible in the dataset.
 """
 
     return call_qwen(prompt)
