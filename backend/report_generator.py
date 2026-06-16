@@ -24,13 +24,21 @@ def format_markdown_table(headers, rows):
     ) + "|\n"
 
     for row in rows:
+        formatted_row = []
+
+        for value in row:
+            if isinstance(value, (int, float)):
+                formatted_row.append(
+                    f"{value:,}"
+                )
+            else:
+                formatted_row.append(
+                    str(value)
+                )
 
         table += (
             "| "
-            + " | ".join(
-                str(value)
-                for value in row
-            )
+            + " | ".join(formatted_row)
             + " |\n"
         )
 
@@ -163,31 +171,34 @@ Rules:
 - Do not invent numbers.
 - Do not speculate on causes.
 - Keep response under 100 words.
+- Do not repeat numerical values.
+- Do not add currency symbols.
+- Do not mention exact figures already shown in tables.
 """
 
     summary = call_qwen(prompt)
 
     report = f"""
-    COMPLAINT ANALYSIS REPORT
+# COMPLAINT ANALYSIS REPORT
 
-    TOP COMPLAINT CATEGORIES
+## TOP COMPLAINT CATEGORIES
 
-    {top_complaints_table}
+{top_complaints_table}
 
-    BRANCH COMPLAINT VOLUME
+## BRANCH COMPLAINT VOLUME
 
-    {branch_table}
+{branch_table}
 
-    HIGH PRIORITY ISSUES
+## HIGH PRIORITY ISSUES
 
-    {priority_table}
+{priority_table}
 
-    CUSTOMER SATISFACTION
+## CUSTOMER SATISFACTION
 
-    Average Rating: {average_rating[0][0]}
+Average Rating: {average_rating[0][0]}
 
-    {summary}
-    """
+{summary}
+"""
 
     return report
 
@@ -264,22 +275,25 @@ Rules:
 - Do not repeat tables.
 - Do not invent numbers.
 - Keep response under 100 words.
+- Do not repeat numerical values.
+- Do not add currency symbols.
+- Do not mention exact figures already shown in tables.
 """
 
     summary = call_qwen(prompt)
 
     report = f"""
-REVENUE ANALYSIS REPORT
+# REVENUE ANALYSIS REPORT
 
-REVENUE BY SERVICE
+## REVENUE BY SERVICE
 
 {top_services_table}
 
-REVENUE BY BRANCH
+## REVENUE BY BRANCH
 
 {branch_revenue_table}
 
-AVERAGE SERVICE COST
+## AVERAGE SERVICE COST
 
 {avg_service_cost[0][0]}
 
@@ -377,22 +391,25 @@ Rules:
 - Do not assume currency symbols.
 - Do not speculate on causes.
 - Keep response under 100 words.
+- Do not repeat numerical values.
+- Do not add currency symbols.
+- Do not mention exact figures already shown in tables.
 """
 
     summary = call_qwen(prompt)
 
     report = f"""
-BRANCH PERFORMANCE REPORT
+#BRANCH PERFORMANCE REPORT
 
-BRANCH RATINGS
+##BRANCH RATINGS
 
 {ratings_table}
 
-BRANCH REVENUE
+##BRANCH REVENUE
 
 {revenue_table}
 
-BRANCH COMPLAINTS
+##BRANCH COMPLAINTS
 
 {complaints_table}
 
@@ -483,22 +500,25 @@ Rules:
 - Do not assume currency symbols.
 - Do not speculate on causes.
 - Keep response under 100 words.
+- Do not repeat numerical values.
+- Do not add currency symbols.
+- Do not mention exact figures already shown in tables.
 """
 
     summary = call_qwen(prompt)
 
     report = f"""
-CUSTOMER SATISFACTION REPORT
+#CUSTOMER SATISFACTION REPORT
 
-AVERAGE CUSTOMER RATING
+##AVERAGE CUSTOMER RATING
 
 {average_rating[0][0]}
 
-RETURN INTENT
+##RETURN INTENT
 
 {return_table}
 
-RECOMMENDATION INTENT
+##RECOMMENDATION INTENT
 
 {recommendation_table}
 
@@ -557,18 +577,21 @@ Rules:
 - Do not infer operational issues.
 - Discuss only facts visible in the data.
 - Keep response under 100 words.
+- Do not repeat numerical values.
+- Do not add currency symbols.
+- Do not mention exact figures already shown in tables.
 """
 
     summary = call_qwen(prompt)
 
     report = f"""
-CUSTOM REPORT
+# CUSTOM REPORT
 
-USER REQUEST
+## USER REQUEST
 
 {question}
 
-DATA
+## DATA
 
 {rows}
 
