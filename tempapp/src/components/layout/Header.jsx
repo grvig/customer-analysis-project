@@ -1,33 +1,50 @@
+import { useEffect, useState } from "react";
+
 export default function Header() {
-  const today = new Date().toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const savedMode =
+      localStorage.getItem("theme") === "dark";
+
+    setDarkMode(savedMode);
+
+    if (savedMode) {
+      document.body.classList.add("dark-mode");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newMode = !darkMode;
+
+    setDarkMode(newMode);
+
+    if (newMode) {
+      document.body.classList.add("dark-mode");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.body.classList.remove("dark-mode");
+      localStorage.setItem("theme", "light");
+    }
+  };
 
   return (
     <div className="header">
       <div>
-        <h1>Customer Analytics Dashboard</h1>
+        <h1>Customer Analysis Dashboard</h1>
 
-        <p
-          style={{
-            color: "#777",
-            marginTop: "8px",
-            fontSize: "14px",
-          }}
-        >
-          Business Intelligence & Service Insights
+        <p className="header-subtitle">
+          Customer Analytics & Business Insights
         </p>
       </div>
 
-      <div
-        style={{
-          color: "#777",
-          fontWeight: "600",
-        }}
-      >
-        {today}
+      <div className="header-actions">
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+        >
+          {darkMode ? "☀️" : "🌙"}
+        </button>
       </div>
     </div>
   );
