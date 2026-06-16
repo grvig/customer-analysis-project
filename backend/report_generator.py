@@ -435,12 +435,18 @@ def generate_customer_satisfaction_report():
         LIMIT 20;
     """)
 
+    return_table = format_markdown_table(
+        ["Will Return", "Count"],
+        return_intent
+    )
+
+    recommendation_table = format_markdown_table(
+        ["Recommend Service", "Count"],
+        recommendation_intent
+    )
+
     prompt = f"""
 You are a senior business analyst.
-
-Generate a professional Customer Satisfaction Report.
-
-Data:
 
 Average Customer Rating:
 {average_rating}
@@ -451,44 +457,55 @@ Will Return Analysis:
 Recommendation Analysis:
 {recommendation_intent}
 
-Customer Feedback Samples:
-{feedback_samples}
+Write ONLY:
 
-Report Format:
+SUMMARY
 
-CUSTOMER SATISFACTION REPORT
+- bullet
+- bullet
+- bullet
 
-Executive Summary
+RECOMMENDATIONS
 
-Average Customer Rating
-
-Return Intent Analysis
-
-Recommendation Analysis
-
-Feedback Insights
-
-Recommendations
+- bullet
+- bullet
+- bullet
 
 Rules:
 
-- Use only provided data.
+- Maximum 3 summary bullets.
+- Maximum 3 recommendation bullets.
+- Do not repeat numerical values.
+- Do not repeat tables.
 - Do not invent numbers.
 - Do not invent metrics.
 - Do not invent percentages.
 - Do not assume currency symbols.
-- Do not create fake statistics.
-- Be professional.
-- Use concise business language.
-- Do not include "Prepared By".
-- Do not include signatures.
-- Do not include contact information.
-- Do not include dates.
-- End the report after Recommendations.
-- Keep report under 400 words.
+- Do not speculate on causes.
+- Keep response under 100 words.
 """
 
-    return call_qwen(prompt)
+    summary = call_qwen(prompt)
+
+    report = f"""
+CUSTOMER SATISFACTION REPORT
+
+AVERAGE CUSTOMER RATING
+
+{average_rating[0][0]}
+
+RETURN INTENT
+
+{return_table}
+
+RECOMMENDATION INTENT
+
+{recommendation_table}
+
+{summary}
+"""
+
+    return report
 
 def generate_custom_report(question):
 
