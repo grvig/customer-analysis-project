@@ -11,3 +11,14 @@ export const generateReport = async (type) => {
 
   return response.data;
 };
+
+export const generateCustomReport = async (question) => {
+  const response = await axios.post(
+    `${API_BASE_URL}/report/custom`,
+    {
+      question,
+    }
+  );
+
+  return response.data;
+};

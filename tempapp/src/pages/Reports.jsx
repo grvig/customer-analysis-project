@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { generateReport } from "../services/reportService";
+import {
+  generateReport,
+  generateCustomReport,
+} from "../services/reportService";
 
 export default function Reports() {
   const [type, setType] = useState("complaint");
@@ -8,6 +11,13 @@ export default function Reports() {
 
   const handleGenerate = async () => {
     const data = await generateReport(type);
+    setReport(data.report);
+  };
+  const handleCustomReport = async () => {
+    const data = await generateCustomReport(
+      customQuestion
+    );
+
     setReport(data.report);
   };
 
@@ -57,7 +67,7 @@ export default function Reports() {
         }}
       />
 
-      <button>
+      <button onClick={handleCustomReport}>
         Generate Custom Report
       </button>
 
