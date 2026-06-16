@@ -19,7 +19,7 @@ export default function RevenueChart() {
           <XAxis dataKey="service" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="revenue" />
+          <Bar dataKey="revenue" fill="#F36F21" />
         </BarChart>
       </ResponsiveContainer>
     </div>
