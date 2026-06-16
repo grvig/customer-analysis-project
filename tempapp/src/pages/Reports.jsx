@@ -4,6 +4,7 @@ import { generateReport } from "../services/reportService";
 export default function Reports() {
   const [type, setType] = useState("complaint");
   const [report, setReport] = useState("");
+  const [customQuestion, setCustomQuestion] = useState("");
 
   const handleGenerate = async () => {
     const data = await generateReport(type);
@@ -32,6 +33,32 @@ export default function Reports() {
 
       <button disabled>
         Download PDF
+      </button>
+
+      <h3
+        style={{
+          marginTop: "30px",
+        }}
+      >
+        Custom Report
+      </h3>
+
+      <input
+        type="text"
+        value={customQuestion}
+        onChange={(e) =>
+          setCustomQuestion(e.target.value)
+        }
+        placeholder="Enter custom report request"
+        style={{
+          width: "100%",
+          marginTop: "20px",
+          marginBottom: "10px",
+        }}
+      />
+
+      <button>
+        Generate Custom Report
       </button>
 
       <textarea
