@@ -2,6 +2,8 @@ import subprocess
 import re
 from database import execute_query
 from config import REPORT_MODEL
+from ai_utils import generate_sql
+from database import execute_custom_query
 
 def clean_text(text):
 
@@ -394,6 +396,72 @@ Rules:
 
     return call_qwen(prompt)
 
+def generate_custom_report(question):
+
+    sql = generate_sql(
+        question
+    )
+    
+    print("\nGenerated SQL:")
+    print(sql)
+    print("\n")
+
+    result = execute_custom_query(
+        sql
+    )
+
+    if not result["success"]:
+
+        raise Exception(
+            result["error"]
+        )
+
+    rows = result["rows"]
+
+    prompt = f"""
+You are a senior business analyst.
+
+Generate a professional business report.
+
+User Request:
+{question}
+
+Data:
+{rows}
+
+Report Format:
+
+CUSTOM REPORT
+
+Executive Summary
+
+Key Findings
+
+Business Insights
+
+Recommendations
+
+Rules:
+
+- Use only provided data.
+- Do not invent numbers.
+- Do not invent metrics.
+- Do not invent percentages.
+- Do not assume currency symbols.
+- Do not create fake statistics.
+- Be professional.
+- Use concise business language.
+- Do not include dates.
+- End the report after Recommendations.
+- Keep report under 400 words.
+- Do not speculate on root causes.
+- Do not infer reasons behind trends.
+- Do not assume operational problems.
+- Discuss only patterns visible in the data.
+"""
+
+    return call_qwen(prompt)
+
 def generate_report(report_type):
 
     try:
@@ -422,9 +490,9 @@ def generate_report(report_type):
 
 if __name__ == "__main__":
 
-    report = generate_report(
-    "complaint"
-)
+    report = generate_custom_report(
+        "Show the top complaint categories"
+    )
 
     print("\n")
     print("=" * 60)
