@@ -510,7 +510,7 @@ RECOMMENDATION INTENT
 def generate_custom_report(question):
 
     result = get_query_results(
-    question
+        question
     )
 
     if not result["success"]:
@@ -524,51 +524,58 @@ def generate_custom_report(question):
     prompt = f"""
 You are a senior business analyst.
 
-Generate a professional business report.
-
 User Request:
 {question}
 
 Data:
 {rows}
 
-Report Format:
+Write ONLY:
 
-CUSTOM REPORT
+SUMMARY
 
-Executive Summary
+- bullet
+- bullet
+- bullet
 
-Key Findings
+RECOMMENDATIONS
 
-Business Insights
-
-Recommendations
+- bullet
+- bullet
+- bullet
 
 Rules:
 
-- Use only provided data.
+- Maximum 3 summary bullets.
+- Maximum 3 recommendation bullets.
+- Do not repeat all data values.
 - Do not invent numbers.
 - Do not invent metrics.
 - Do not invent percentages.
 - Do not assume currency symbols.
-- Do not create fake statistics.
-- Be professional.
-- Use concise business language.
-- Do not include dates.
-- End the report after Recommendations.
-- Keep report under 400 words.
-- Do not speculate on root causes.
-- Do not infer reasons behind trends.
-- Do not assume operational problems.
-- Discuss only patterns visible in the data.
-- Do not calculate percentages unless explicitly present in the data.
 - Do not speculate on causes.
 - Do not infer operational issues.
-- Discuss only facts visible in the dataset.
+- Discuss only facts visible in the data.
+- Keep response under 100 words.
 """
 
-    return call_qwen(prompt)
+    summary = call_qwen(prompt)
 
+    report = f"""
+CUSTOM REPORT
+
+USER REQUEST
+
+{question}
+
+DATA
+
+{rows}
+
+{summary}
+"""
+
+    return report
 def generate_report(report_type):
 
     try:
