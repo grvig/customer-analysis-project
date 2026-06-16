@@ -324,12 +324,23 @@ def generate_branch_report():
         ORDER BY complaints DESC;
     """)
 
+    ratings_table = format_markdown_table(
+        ["Branch", "Rating"],
+        branch_ratings
+    )
+
+    revenue_table = format_markdown_table(
+        ["Branch", "Revenue"],
+        branch_revenue
+    )
+
+    complaints_table = format_markdown_table(
+        ["Branch", "Complaints"],
+        branch_complaints
+    )
+
     prompt = f"""
 You are a senior business analyst.
-
-Generate a professional Branch Performance Report.
-
-Data:
 
 Branch Ratings:
 {branch_ratings}
@@ -340,41 +351,55 @@ Branch Revenue:
 Branch Complaints:
 {branch_complaints}
 
-Report Format:
+Write ONLY:
 
-BRANCH PERFORMANCE REPORT
+SUMMARY
 
-Executive Summary
+- bullet
+- bullet
+- bullet
 
-Top Rated Branches
+RECOMMENDATIONS
 
-Revenue Performance
-
-Complaint Analysis
-
-Overall Branch Assessment
-
-Recommendations
+- bullet
+- bullet
+- bullet
 
 Rules:
 
-- Use only provided data.
+- Maximum 3 summary bullets.
+- Maximum 3 recommendation bullets.
+- Do not repeat numerical values.
+- Do not repeat tables.
 - Do not invent numbers.
 - Do not invent metrics.
 - Do not invent percentages.
 - Do not assume currency symbols.
-- Do not create fake statistics.
-- Be professional.
-- Use concise business language.
-- Do not include "Prepared By".
-- Do not include signatures.
-- Do not include contact information.
-- Do not include dates.
-- End the report after Recommendations.
-- Keep report under 400 words.
+- Do not speculate on causes.
+- Keep response under 100 words.
 """
 
-    return call_qwen(prompt)
+    summary = call_qwen(prompt)
+
+    report = f"""
+BRANCH PERFORMANCE REPORT
+
+BRANCH RATINGS
+
+{ratings_table}
+
+BRANCH REVENUE
+
+{revenue_table}
+
+BRANCH COMPLAINTS
+
+{complaints_table}
+
+{summary}
+"""
+
+    return report
 
 def generate_customer_satisfaction_report():
 
