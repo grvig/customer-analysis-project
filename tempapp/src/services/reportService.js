@@ -1,11 +1,13 @@
-import { sampleReport } from "../mock/reportMock";
+import axios from "axios";
+import { API_BASE_URL } from "./api";
 
 export const generateReport = async (type) => {
-  console.log(type);
+  const response = await axios.post(
+    `${API_BASE_URL}/report`,
+    {
+      report_type: type,
+    }
+  );
 
-  return {
-    success: true,
-    report_type: type,
-    report: sampleReport,
-  };
+  return response.data;
 };
