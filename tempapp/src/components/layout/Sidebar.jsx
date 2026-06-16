@@ -4,7 +4,10 @@ export default function Sidebar() {
   return (
     <div className="sidebar">
       <div className="sidebar-brand">
-        <h2>myTVS</h2>
+        <h2>
+          <span className="brand-orange">my</span>
+          <span className="brand-blue">TVS</span>
+        </h2>
 
         <p className="brand-subtitle">
           Customer Analytics Platform
