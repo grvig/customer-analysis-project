@@ -13,24 +13,26 @@ def clean_text(text):
 
     return text
 
-def format_table(headers, rows):
+def format_markdown_table(headers, rows):
 
     table = ""
 
-    table += " | ".join(headers)
-    table += "\n"
+    table += "| " + " | ".join(headers) + " |\n"
 
-    table += "-" * 60
-    table += "\n"
+    table += "|" + "|".join(
+        ["---"] * len(headers)
+    ) + "|\n"
 
     for row in rows:
 
-        table += " | ".join(
-            str(value)
-            for value in row
+        table += (
+            "| "
+            + " | ".join(
+                str(value)
+                for value in row
+            )
+            + " |\n"
         )
-
-        table += "\n"
 
     return table
 
@@ -108,17 +110,17 @@ def generate_complaint_report():
         FROM surveys;
     """)
     
-    top_complaints_table = format_table(
+    top_complaints_table = format_markdown_table(
         ["Category", "Complaints"],
         top_complaints
     )
 
-    branch_table = format_table(
+    branch_table = format_markdown_table(
         ["Branch", "Complaints"],
         complaints_by_branch[:10]
     )
 
-    priority_table = format_table(
+    priority_table = format_markdown_table(
         ["Category", "Complaints"],
         high_priority
     )
@@ -218,15 +220,20 @@ def generate_revenue_report():
             ROUND(AVG(service_cost),2)
         FROM services;
     """)
+    top_services_table = format_markdown_table(
+        ["Service Type", "Revenue"],
+        top_services
+    )
+
+    branch_revenue_table = format_markdown_table(
+        ["Branch", "Revenue"],
+        branch_revenue
+    )
 
     prompt = f"""
 You are a senior business analyst.
 
-Generate a professional Revenue Analysis Report.
-
-Data:
-
-Top Revenue Services:
+Revenue By Service:
 {top_services}
 
 Revenue By Branch:
@@ -235,38 +242,51 @@ Revenue By Branch:
 Average Service Cost:
 {avg_service_cost}
 
-Report Format:
+Write ONLY:
 
-REVENUE ANALYSIS REPORT
+SUMMARY
 
-Executive Summary
+- bullet
+- bullet
+- bullet
 
-Top Revenue Services
+RECOMMENDATIONS
 
-Branch Revenue Analysis
+- bullet
+- bullet
+- bullet
 
-Average Service Cost
-
-Recommendations
 Rules:
 
-- Use only provided data.
+- Maximum 3 summary bullets.
+- Maximum 3 recommendation bullets.
+- Do not repeat numerical values.
+- Do not repeat tables.
 - Do not invent numbers.
-- Do not invent metrics.
-- Do not invent percentages.
-- Do not assume currency symbols.
-- Do not create fake statistics.
-- Be professional.
-- Use concise business language.
-- Do not include "Prepared By".
-- Do not include signatures.
-- Do not include contact information.
-- Do not include dates.
-- End the report after Recommendations.
-- Keep report under 400 words.
+- Keep response under 100 words.
 """
 
-    return call_qwen(prompt)
+    summary = call_qwen(prompt)
+
+    report = f"""
+REVENUE ANALYSIS REPORT
+
+REVENUE BY SERVICE
+
+{top_services_table}
+
+REVENUE BY BRANCH
+
+{branch_revenue_table}
+
+AVERAGE SERVICE COST
+
+{avg_service_cost[0][0]}
+
+{summary}
+"""
+
+    return report
 
 def generate_branch_report():
 
@@ -536,7 +556,7 @@ def generate_report(report_type):
 if __name__ == "__main__":
 
     report = generate_report(
-        "complaint"
+        "revenue"
     )
 
     print("\n")
