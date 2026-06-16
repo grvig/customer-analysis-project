@@ -13,6 +13,27 @@ def clean_text(text):
 
     return text
 
+def format_table(headers, rows):
+
+    table = ""
+
+    table += " | ".join(headers)
+    table += "\n"
+
+    table += "-" * 60
+    table += "\n"
+
+    for row in rows:
+
+        table += " | ".join(
+            str(value)
+            for value in row
+        )
+
+        table += "\n"
+
+    return table
+
 def call_qwen(prompt):
 
     try:
@@ -86,18 +107,29 @@ def generate_complaint_report():
             ROUND(AVG(customer_rating), 2)
         FROM surveys;
     """)
+    
+    top_complaints_table = format_table(
+        ["Category", "Complaints"],
+        top_complaints
+    )
+
+    branch_table = format_table(
+        ["Branch", "Complaints"],
+        complaints_by_branch[:10]
+    )
+
+    priority_table = format_table(
+        ["Category", "Complaints"],
+        high_priority
+    )
 
     prompt = f"""
 You are a senior business analyst.
 
-Generate a professional Complaint Analysis Report.
-
-Data:
-
 Top Complaint Categories:
 {top_complaints}
 
-Complaint Volume By Branch:
+Branch Complaint Volume:
 {complaints_by_branch}
 
 High Priority Complaints:
@@ -106,40 +138,57 @@ High Priority Complaints:
 Average Customer Rating:
 {average_rating}
 
-Report Format:
+Write ONLY:
 
-COMPLAINT ANALYSIS REPORT
+SUMMARY
 
-Executive Summary
+- bullet
+- bullet
+- bullet
 
-Top Complaint Categories
+RECOMMENDATIONS
 
-Branch Analysis
+- bullet
+- bullet
+- bullet
 
-High Priority Issues
-
-Customer Satisfaction
-
-Recommendations
 Rules:
 
-- Use only provided data.
+- Maximum 3 summary bullets.
+- Maximum 3 recommendation bullets.
+- Do not repeat numerical values.
+- Do not repeat tables.
 - Do not invent numbers.
-- Do not invent metrics.
-- Do not invent percentages.
-- Do not assume currency symbols.
-- Do not create fake statistics.
-- Be professional.
-- Use concise business language.
-- Do not include "Prepared By".
-- Do not include signatures.
-- Do not include contact information.
-- Do not include dates.
-- End the report after Recommendations.
-- Keep report under 400 words.
+- Do not speculate on causes.
+- Keep response under 100 words.
 """
 
-    return call_qwen(prompt)
+    summary = call_qwen(prompt)
+
+    report = f"""
+    COMPLAINT ANALYSIS REPORT
+
+    TOP COMPLAINT CATEGORIES
+
+    {top_complaints_table}
+
+    BRANCH COMPLAINT VOLUME
+
+    {branch_table}
+
+    HIGH PRIORITY ISSUES
+
+    {priority_table}
+
+    CUSTOMER SATISFACTION
+
+    Average Rating: {average_rating[0][0]}
+
+    {summary}
+    """
+
+    return report
+
 
 def generate_revenue_report():
 
@@ -486,8 +535,8 @@ def generate_report(report_type):
 
 if __name__ == "__main__":
 
-    report = generate_custom_report(
-        "Show the top complaint categories"
+    report = generate_report(
+        "complaint"
     )
 
     print("\n")
