@@ -572,3 +572,21 @@ body.dark-mode button:disabled {
 body.dark-mode input::placeholder {
   color: #e5e7eb;
 }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+
+th,
+td {
+  border: 1px solid #d1d5db;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+}
