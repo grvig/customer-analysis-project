@@ -130,7 +130,7 @@ body {
 }
 
 .header h1 {
-  color: var(--tvs-blue);
+  color: var(--tvs-orange);
   font-size: 2rem;
   font-weight: 700;
 }
@@ -568,4 +568,7 @@ body.dark-mode .sidebar a:hover {
 
 body.dark-mode button:disabled {
   background: #475569;
+}
+body.dark-mode input::placeholder {
+  color: #e5e7eb;
 }

@@ -31,7 +31,7 @@ export default function Header() {
   return (
     <div className="header">
       <div>
-        <h1>Customer Analysis Dashboard</h1>
+        <h1 className="header-title">Customer Analysis Dashboard</h1>
 
         <p className="header-subtitle">
           Customer Analytics & Business Insights
