@@ -4,6 +4,8 @@ import {
   generateCustomReport,
   downloadPdfReport,
 } from "../services/reportService";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function Reports() {
   const [type, setType] = useState("complaint");
@@ -133,15 +135,22 @@ export default function Reports() {
         </button>
       </div>
 
-      <textarea
-        value={report}
-        readOnly
-        rows={20}
+      <div
         style={{
-          width: "100%",
           marginTop: "20px",
+          padding: "20px",
+          border: "1px solid #ddd",
+          borderRadius: "8px",
+          backgroundColor: "#fff",
+          overflowX: "auto",
         }}
-      />
+      >
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+        >
+          {report}
+        </ReactMarkdown>
+      </div>
     </div>
   );
 }
