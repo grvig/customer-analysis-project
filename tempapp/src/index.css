@@ -590,3 +590,26 @@ th {
   background-color: #f3f4f6;
   font-weight: 600;
 }
+/* REPORT TABLE DARK MODE FIX */
+
+body.dark-mode table {
+  color: #f1f5f9;
+}
+
+body.dark-mode th {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+body.dark-mode td {
+  color: #f1f5f9;
+  border-color: #334155;
+}
+
+body.dark-mode table {
+  border-color: #334155;
+}
+
+body.dark-mode tr {
+  border-color: #334155;
+}
