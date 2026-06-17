@@ -243,7 +243,7 @@ def download_report(filename: str):
 @app.get("/dashboard")
 def dashboard():
 
-    return {
+    summary = {
         "customers": execute_query(
             "SELECT COUNT(*) FROM customers;"
         )[0][0],
@@ -259,6 +259,69 @@ def dashboard():
         "surveys": execute_query(
             "SELECT COUNT(*) FROM surveys;"
         )[0][0]
+    }
+
+    complaints = execute_query("""
+        SELECT
+            issue_category,
+            COUNT(*) AS complaints
+        FROM calls
+        WHERE call_type = 'Complaint'
+        GROUP BY issue_category
+        ORDER BY complaints DESC
+        LIMIT 5;
+    """)
+
+    revenue = execute_query("""
+        SELECT
+            service_type,
+            SUM(service_cost) AS revenue
+        FROM services
+        GROUP BY service_type
+        ORDER BY revenue DESC
+        LIMIT 5;
+    """)
+
+    ratings = execute_query("""
+        SELECT
+            c.branch,
+            ROUND(AVG(s.customer_rating), 2)
+        FROM surveys s
+        JOIN services sv
+            ON s.service_id = sv.service_id
+        JOIN calls c
+            ON sv.call_id = c.call_id
+        GROUP BY c.branch
+        ORDER BY 2 DESC
+        LIMIT 10;
+    """)
+
+    return {
+        "summary": summary,
+
+        "complaints": [
+            {
+                "name": row[0],
+                "value": row[1]
+            }
+            for row in complaints
+        ],
+
+        "revenue": [
+            {
+                "service": row[0],
+                "revenue": row[1]
+            }
+            for row in revenue
+        ],
+
+        "ratings": [
+            {
+                "branch": row[0],
+                "rating": row[1]
+            }
+            for row in ratings
+        ]
     }
 @app.get("/health")
 def health():

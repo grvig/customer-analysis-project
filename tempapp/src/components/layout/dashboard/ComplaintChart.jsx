@@ -8,8 +8,6 @@ import {
   Sector,
 } from "recharts";
 
-import { complaintData } from "../../../mock/dashboardData";
-
 const COLORS = [
   "#0056A6",
   "#F58220",
@@ -43,7 +41,7 @@ const renderActiveShape = (props) => {
   );
 };
 
-export default function ComplaintChart() {
+export default function ComplaintChart({ data }) {
   const [activeIndex, setActiveIndex] = useState(-1);
 
   return (
@@ -53,7 +51,7 @@ export default function ComplaintChart() {
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie
-            data={complaintData}
+            data={data}
             dataKey="value"
             outerRadius={100}
             activeIndex={activeIndex}
@@ -62,7 +60,7 @@ export default function ComplaintChart() {
             onMouseLeave={() => setActiveIndex(-1)}
             label
           >
-            {complaintData.map((entry, index) => (
+            {data.map((entry, index) => (
               <Cell
                 key={index}
                 fill={COLORS[index % COLORS.length]}

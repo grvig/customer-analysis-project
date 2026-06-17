@@ -7,15 +7,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-import { revenueData } from "../../../mock/dashboardData";
-
-export default function RevenueChart() {
+export default function RevenueChart({ data }) {
   return (
     <div className="chart-card">
       <h3>Revenue by Service Type</h3>
 
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={revenueData}>
+        <BarChart data={data}>
           <XAxis dataKey="service" />
           <YAxis />
           <Tooltip />
