@@ -144,13 +144,21 @@ export default function Reports() {
         </button>
       </div>
 
-      <div className="report-output">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-        >
-          {report}
-        </ReactMarkdown>
-      </div>
+      {report && (
+        <div className="report-card">
+          <h3 className="report-title">
+            Generated Report
+          </h3>
+
+          <div className="report-output">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+            >
+              {report}
+            </ReactMarkdown>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
