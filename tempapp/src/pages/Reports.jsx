@@ -36,14 +36,19 @@ export default function Reports() {
       setLoading(true);
 
       const data = await generateCustomReport(customQuestion);
+
       setReport(data.report);
     } catch (error) {
       console.error(error);
-      setReport("Failed to generate custom report. Please try again.");
+
+      setReport(
+        "Failed to generate custom report. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
+
   const handleDownloadPdf = async () => {
     try {
       const data = await downloadPdfReport(type);
@@ -123,7 +128,9 @@ export default function Reports() {
         <input
           type="text"
           value={customQuestion}
-          onChange={(e) => setCustomQuestion(e.target.value)}
+          onChange={(e) =>
+            setCustomQuestion(e.target.value)
+          }
           placeholder="Enter custom report request..."
         />
 
@@ -131,20 +138,13 @@ export default function Reports() {
           onClick={handleCustomReport}
           disabled={loading}
         >
-          {loading ? "Generating..." : "Generate Custom Report"}
+          {loading
+            ? "Generating..."
+            : "Generate Custom Report"}
         </button>
       </div>
 
-      <div
-        style={{
-          marginTop: "20px",
-          padding: "20px",
-          border: "1px solid #ddd",
-          borderRadius: "8px",
-          backgroundColor: "#fff",
-          overflowX: "auto",
-        }}
-      >
+      <div className="report-output">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
         >

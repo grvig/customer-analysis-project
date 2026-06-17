@@ -613,3 +613,17 @@ body.dark-mode table {
 body.dark-mode tr {
   border-color: #334155;
 }
+body.dark-mode textarea {
+  background: #1e293b;
+  color: #f1f5f9;
+  border: 1px solid #334155;
+}
+
+body.dark-mode .report-container,
+body.dark-mode .report-output,
+body.dark-mode .report-preview,
+body.dark-mode .report-box {
+  background: #1e293b;
+  color: #f1f5f9;
+  border: 1px solid #334155;
+}
