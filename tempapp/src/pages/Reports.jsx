@@ -32,6 +32,10 @@ export default function Reports() {
   };
 
   const handleCustomReport = async () => {
+    if (!customQuestion.trim()) {
+      setReport("Please enter a report request.");
+      return;
+    }
     try {
       setLoading(true);
 
