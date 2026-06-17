@@ -689,3 +689,32 @@ body.dark-mode .report-output h2,
 body.dark-mode .report-output h3 {
   color: #ffffff;
 }
+.dashboard-tabs {
+  display: flex;
+  gap: 12px;
+  margin: 30px 0;
+  flex-wrap: wrap;
+}
+
+.dashboard-tabs button {
+  background: #23314d;
+  color: white;
+  border: 1px solid var(--border);
+}
+
+.dashboard-tabs button:hover {
+  background: var(--tvs-blue);
+}
+
+.dashboard-tabs .active-tab {
+  background: var(--tvs-orange);
+  color: white;
+}
+
+body.dark-mode .dashboard-tabs button {
+  background: #1e293b;
+}
+
+body.dark-mode .dashboard-tabs .active-tab {
+  background: var(--tvs-orange);
+}

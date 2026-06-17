@@ -8,52 +8,49 @@ import BranchRatingsChart from "../components/layout/dashboard/BranchRatingsChar
 import { getDashboardData } from "../services/dashboardService";
 
 export default function Dashboard() {
-
-  const [dashboardData, setDashboardData] =
-    useState(null);
-
-  const [loading, setLoading] =
-    useState(true);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("complaints");
 
   useEffect(() => {
-
     const fetchDashboard = async () => {
-
       try {
+        const data = await getDashboardData();
 
-        const data =
-          await getDashboardData();
+        console.log("Dashboard Data:", data);
 
-        console.log(data);
-
-        setDashboardData(data);
-
+        if (data) {
+          setDashboardData(data);
+        }
       } catch (error) {
-
-        console.error(error);
-
+        console.error("Dashboard Error:", error);
       } finally {
-
         setLoading(false);
-
       }
-
     };
 
     fetchDashboard();
-
   }, []);
 
   if (loading) {
-
     return <h3>Loading dashboard...</h3>;
+  }
 
+  if (!dashboardData || !dashboardData.summary) {
+    return (
+      <div style={{ padding: "30px" }}>
+        <h2>Failed to load dashboard data.</h2>
+        <p>
+          Check whether the backend is running and
+          returning dashboard data.
+        </p>
+      </div>
+    );
   }
 
   return (
     <>
       <div className="summary-grid">
-
         <SummaryCard
           title="Total Customers"
           value={dashboardData.summary.customers}
@@ -73,25 +70,62 @@ export default function Dashboard() {
           title="Total Surveys"
           value={dashboardData.summary.surveys}
         />
+      </div>
 
+      <div className="dashboard-tabs">
+        <button
+          className={
+            activeTab === "complaints"
+              ? "active-tab"
+              : ""
+          }
+          onClick={() => setActiveTab("complaints")}
+        >
+          Complaints
+        </button>
+
+        <button
+          className={
+            activeTab === "revenue"
+              ? "active-tab"
+              : ""
+          }
+          onClick={() => setActiveTab("revenue")}
+        >
+          Revenue
+        </button>
+
+        <button
+          className={
+            activeTab === "ratings"
+              ? "active-tab"
+              : ""
+          }
+          onClick={() => setActiveTab("ratings")}
+        >
+          Ratings
+        </button>
       </div>
 
       <div className="charts-grid">
+        {activeTab === "complaints" && (
+          <ComplaintChart
+            data={dashboardData.complaints}
+          />
+        )}
 
-        <ComplaintChart
-          data={dashboardData.complaints}
-        />
+        {activeTab === "revenue" && (
+          <RevenueChart
+            data={dashboardData.revenue}
+          />
+        )}
 
-        <RevenueChart
-          data={dashboardData.revenue}
-        />
-
-        <BranchRatingsChart
-          data={dashboardData.ratings}
-        />
-
+        {activeTab === "ratings" && (
+          <BranchRatingsChart
+            data={dashboardData.ratings}
+          />
+        )}
       </div>
     </>
   );
-
 }
