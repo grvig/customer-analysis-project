@@ -33,7 +33,12 @@ export default function Dashboard() {
   }, []);
 
   if (loading) {
-    return <h3>Loading dashboard...</h3>;
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading dashboard...</p>
+      </div>
+    );
   }
 
   if (!dashboardData || !dashboardData.summary) {
