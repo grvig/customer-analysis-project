@@ -140,7 +140,10 @@ export default function Reports() {
 
         <button
           onClick={handleCustomReport}
-          disabled={loading}
+          disabled={
+            loading ||
+            !customQuestion.trim()
+          }
         >
           {loading
             ? "Generating..."
