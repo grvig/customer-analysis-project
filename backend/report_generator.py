@@ -29,7 +29,7 @@ def format_markdown_table(headers, rows):
         for value in row:
             if isinstance(value, (int, float)):
                 formatted_row.append(
-                    f"{value:,}"
+                    f"{value:,.2f}"
                 )
             else:
                 formatted_row.append(
