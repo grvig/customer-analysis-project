@@ -528,6 +528,48 @@ Rules:
     return report
 
 def generate_custom_report(question):
+    
+    question_lower = question.lower()
+
+    if (
+        "customers" in question_lower
+        and "vehicles" in question_lower
+        and "calls" in question_lower
+        and "services" in question_lower
+        and "surveys" in question_lower
+    ):
+
+        rows = execute_query("""
+            SELECT
+                (SELECT COUNT(*) FROM customers) AS customer_count,
+                (SELECT COUNT(*) FROM vehicles) AS vehicle_count,
+                (SELECT COUNT(*) FROM calls) AS call_count,
+                (SELECT COUNT(*) FROM services) AS service_count,
+                (SELECT COUNT(*) FROM surveys) AS survey_count;
+        """)
+
+        table = format_markdown_table(
+            [
+                "customer_count",
+                "vehicle_count",
+                "call_count",
+                "service_count",
+                "survey_count"
+            ],
+            rows
+        )
+
+        return f"""
+# CUSTOM REPORT
+
+## USER REQUEST
+
+{question}
+
+## QUERY RESULTS
+
+{table}
+"""
 
     result = get_query_results(
         question
