@@ -546,6 +546,18 @@ def generate_custom_report(question):
         columns,
         rows
     )
+    if len(rows) <= 5 and len(columns) <= 10:
+        return f"""
+    # CUSTOM REPORT
+
+    ## USER REQUEST
+
+    {question}
+
+    ## QUERY RESULTS
+
+    {table}
+    """
 
     prompt = f"""
 You are a senior business analyst.
