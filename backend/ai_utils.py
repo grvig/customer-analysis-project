@@ -176,6 +176,9 @@ def get_query_results(question):
     sql = generate_sql(
         question
     )
+    print("\n========== GENERATED SQL ==========")
+    print(sql)
+    print("===================================\n")
 
     query_result = execute_custom_query(
         sql
