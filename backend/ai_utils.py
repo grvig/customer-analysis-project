@@ -204,6 +204,7 @@ def get_query_results(question):
     return {
         "success": True,
         "sql": sql,
+        "columns": query_result["columns"],
         "rows": query_result["rows"],
         "error": None
     }

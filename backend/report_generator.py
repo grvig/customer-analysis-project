@@ -540,6 +540,12 @@ def generate_custom_report(question):
         )
 
     rows = result["rows"]
+    columns = result["columns"]
+    
+    table = format_markdown_table(
+        columns,
+        rows
+    )
 
     prompt = f"""
 You are a senior business analyst.
@@ -548,7 +554,7 @@ User Request:
 {question}
 
 Data:
-{rows}
+{table}
 
 Write ONLY:
 
@@ -558,7 +564,7 @@ SUMMARY
 - bullet
 - bullet
 
-RECOMMENDATIONS
+OBSERVATIONS
 
 - bullet
 - bullet
@@ -591,9 +597,9 @@ Rules:
 
 {question}
 
-## DATA
+## QUERY RESULTS
 
-{rows}
+{table}
 
 {summary}
 """

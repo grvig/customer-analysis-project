@@ -34,14 +34,20 @@ def execute_custom_query(query):
 
         try:
             rows = cur.fetchall()
-        except:
+            columns = [
+                desc[0]
+                for desc in cur.description
+            ]
+        except Exception:
             rows = []
+            columns = []
 
         cur.close()
         conn.close()
 
         return {
             "success": True,
+            "columns": columns,
             "rows": rows,
             "error": None
         }
