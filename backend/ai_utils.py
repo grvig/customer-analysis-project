@@ -84,6 +84,10 @@ SQL:
     sql = sql.replace("\n", " ")
     sql = sql.replace("\r", " ")
     sql = " ".join(sql.split())
+    
+    print("\nGENERATED SQL:")
+    print(sql)
+    print()
 
     return sql
 
