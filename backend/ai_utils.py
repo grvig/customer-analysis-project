@@ -237,6 +237,9 @@ def ask_ai(question):
                 query_result["error"]
             )
             query_result = execute_custom_query(sql)
+            print("\n========== QUERY RESULT ==========")
+            print(query_result)
+            print("==================================\n")
 
 
         if not query_result["success"]:
