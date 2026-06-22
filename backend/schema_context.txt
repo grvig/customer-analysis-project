@@ -20,6 +20,17 @@ Rules:
 * Do not invent tables or columns.
 * Generate the simplest correct query.
 
+Always provide meaningful aliases for calculated columns.
+
+Examples:
+
+SELECT COUNT(*) AS customer_count
+SELECT AVG(customer_rating) AS average_customer_rating
+SELECT SUM(service_cost) AS total_revenue
+
+Never return unnamed aggregate columns.
+
+
 Database Schema
 
 customers

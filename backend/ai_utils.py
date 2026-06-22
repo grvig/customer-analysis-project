@@ -75,7 +75,13 @@ Question:
 SQL:
 """
 
-    sql = call_qwen(prompt)
+    response = call_qwen(prompt)
+
+    print("\nRAW MODEL RESPONSE:")
+    print(response)
+    print()
+
+    sql = response
 
     sql = sql.replace("```sql", "")
     sql = sql.replace("```", "")
