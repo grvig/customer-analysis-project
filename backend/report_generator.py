@@ -4,6 +4,7 @@ from database import execute_query
 from config import REPORT_MODEL
 from ai_utils import get_query_results
 from database import execute_custom_query
+from textwrap import dedent
 
 def clean_text(text):
 
@@ -566,8 +567,7 @@ def generate_custom_report(question):
             rows
         )
 
-        return f"""
-# CUSTOM REPORT
+        return dedent(f"""# CUSTOM REPORT
 
 ## USER REQUEST
 
@@ -576,7 +576,7 @@ def generate_custom_report(question):
 ## QUERY RESULTS
 
 {table}
-"""
+""")
     if (
         "average customer rating" in question_lower
         or "average rating" in question_lower
@@ -595,8 +595,7 @@ def generate_custom_report(question):
             rows
         )
 
-        return f"""
-# CUSTOM REPORT
+        return dedent(f"""# CUSTOM REPORT
 
 ## USER REQUEST
 
@@ -605,7 +604,7 @@ def generate_custom_report(question):
 ## QUERY RESULTS
 
 {table}
-"""
+""")
 
     result = get_query_results(
         question
@@ -625,17 +624,22 @@ def generate_custom_report(question):
         rows
     )
     if len(rows) <= 5 and len(columns) <= 10:
-        return f"""
-    # CUSTOM REPORT
+        report = f"""
+# CUSTOM REPORT
 
-    ## USER REQUEST
+## USER REQUEST
 
-    {question}
+{question}
 
-    ## QUERY RESULTS
+## QUERY RESULTS
 
-    {table}
-    """
+{table}
+"""
+        print("\nREPORT DEBUG:")
+        print(repr(report))
+        print()
+
+        return report
 
     prompt = f"""
 You are a senior business analyst.
@@ -693,7 +697,9 @@ Rules:
 
 {summary}
 """
-
+    print("\nREPORT DEBUG:")
+    print(repr(report))
+    print()
     return report
 def generate_report(report_type):
 
