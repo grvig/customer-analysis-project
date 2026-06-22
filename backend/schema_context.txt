@@ -22,6 +22,12 @@ Rules:
 
 Always provide meaningful aliases for calculated columns.
 
+For ranking questions:
+
+- "highest" means return the top 5 results.
+- "lowest" means return the bottom 5 results.
+- Use LIMIT 5 unless the user explicitly specifies a different number.
+
 Examples:
 
 SELECT COUNT(*) AS customer_count
