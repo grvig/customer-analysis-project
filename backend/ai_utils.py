@@ -3,7 +3,7 @@ from config import MODEL_NAME
 import re
 from database import execute_custom_query
 import time
-MAX_SQL_RETRIES = 1
+MAX_SQL_RETRIES = 3
 
 def clean_text(text):
 
@@ -274,6 +274,9 @@ Return ONLY SQL.
     sql = sql.replace("\r", " ")
     sql = " ".join(sql.split())
 
+    print("\nREGENERATED SQL:")
+    print(sql)
+    print()
 
     return sql
 
@@ -290,10 +293,15 @@ def get_query_results(question):
         sql
     )
 
-    for _ in range(MAX_SQL_RETRIES):
+    for attempt in range(MAX_SQL_RETRIES):
 
         if query_result["success"]:
             break
+
+        print(
+            f"SQL Retry {attempt + 1}: "
+            f"{query_result['error']}"
+        )
 
         sql = regenerate_sql(
             question,
