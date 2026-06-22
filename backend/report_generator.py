@@ -665,7 +665,12 @@ OBSERVATIONS
 - bullet
 
 Rules:
-
+Do not repeat category names from the table.
+Do not repeat rankings from the table.
+Focus on trends, distributions, concentration, comparisons, and patterns.
+Do not infer causes.
+Do not infer technical issues.
+Do not infer customer sentiment.
 - Maximum 3 summary bullets.
 - Maximum 3 recommendation bullets.
 - Do not repeat all data values.
