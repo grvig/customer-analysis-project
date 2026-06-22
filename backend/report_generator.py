@@ -45,6 +45,10 @@ def format_markdown_table(headers, rows):
             + " |\n"
         )
 
+    print("\nTABLE DEBUG:")
+    print(table)
+    print()
+
     return table
 
 def call_qwen(prompt):
@@ -559,6 +563,35 @@ def generate_custom_report(question):
                 "service_count",
                 "survey_count"
             ],
+            rows
+        )
+
+        return f"""
+# CUSTOM REPORT
+
+## USER REQUEST
+
+{question}
+
+## QUERY RESULTS
+
+{table}
+"""
+    if (
+        "average customer rating" in question_lower
+        or "average rating" in question_lower
+    ):
+        rows = execute_query("""
+        SELECT
+            ROUND(
+                AVG(customer_rating),
+                2
+            ) AS average_customer_rating
+        FROM surveys;
+    """)
+
+        table = format_markdown_table(
+            ["average_customer_rating"],
             rows
         )
 
