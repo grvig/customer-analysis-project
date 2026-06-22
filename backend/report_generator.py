@@ -665,6 +665,11 @@ OBSERVATIONS
 - bullet
 
 Rules:
+Never calculate percentages unless explicitly shown in the data.
+Never estimate proportions.
+Never say "majority", "half", "most", "significant share", or similar quantitative claims unless the value is directly visible.
+Do not perform mathematical calculations.
+Only describe visible rankings and patterns.
 Do not repeat category names from the table.
 Do not repeat rankings from the table.
 Focus on trends, distributions, concentration, comparisons, and patterns.
