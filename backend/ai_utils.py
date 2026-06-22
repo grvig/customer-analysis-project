@@ -7,11 +7,111 @@ MAX_SQL_RETRIES = 1
 
 def clean_text(text):
 
-    text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
-    text = text.replace('\u001b', '')
-    text = text.strip()
+    text = re.sub(
+        r'\x1b\[[0-9;]*[A-Za-z]',
+        '',
+        text
+    )
 
-    return text
+    text = text.replace(
+        '\u001b',
+        ''
+    )
+
+    text = text.strip()
+    
+    lines = text.split("\n")
+    fixed_lines = []
+
+    i = 0
+
+    while i < len(lines):
+
+        current = lines[i].strip()
+
+        if i < len(lines) - 1:
+
+            nxt = lines[i + 1].strip()
+
+            current_words = current.split()
+
+            next_words = nxt.split()
+
+            if (
+                current_words
+                and next_words
+                and len(current_words[-1]) >= 2
+                and next_words[0].startswith(
+                    current_words[-1]
+                )
+            ):
+                current_words[-1] = next_words[0]
+
+                next_words = next_words[1:]
+
+                current = " ".join(current_words)
+                nxt = " ".join(next_words)
+
+                fixed_lines.append(current)
+
+                if nxt:
+                    fixed_lines.append(nxt)
+
+                i += 2
+                continue
+
+        fixed_lines.append(current)
+        i += 1
+
+    text = "\n".join(fixed_lines)
+
+    lines = text.splitlines()
+    cleaned_lines = []
+
+    for line in lines:
+
+        line = line.strip()
+
+        if cleaned_lines:
+
+            previous = cleaned_lines[-1]
+
+            if (
+                len(previous) > 3
+                and line.startswith(previous)
+            ):
+                cleaned_lines[-1] = line
+                continue
+
+        cleaned_lines.append(line)
+
+    words = text.split()
+    cleaned_words = []
+
+    i = 0
+
+    while i < len(words):
+
+        if (
+            i < len(words) - 1
+            and len(words[i]) >= 4
+            and words[i + 1].startswith(words[i])
+        ):
+            cleaned_words.append(
+                words[i + 1]
+            )
+            i += 2
+            continue
+
+        cleaned_words.append(
+            words[i]
+        )
+
+        i += 1
+
+    text = " ".join(cleaned_words)
+
+    return "\n".join(cleaned_lines)
 
 def call_qwen(prompt):
 

@@ -683,7 +683,9 @@ Rules:
 """
 
     summary = call_qwen(prompt)
-
+    print("\nRAW SUMMARY:")
+    print(summary)
+    print()
     report = f"""
 # CUSTOM REPORT
 
