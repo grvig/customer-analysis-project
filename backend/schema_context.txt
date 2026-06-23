@@ -677,3 +677,22 @@ ROUND(
     2
 )
 
+Complex analytics queries should prefer WITH clauses (CTEs).
+
+Example:
+
+WITH branch_stats AS (
+    SELECT
+        branch,
+        SUM(service_cost) AS revenue,
+        AVG(customer_rating) AS avg_rating
+    FROM ...
+    GROUP BY branch
+)
+
+SELECT *
+FROM branch_stats
+WHERE revenue > (
+    SELECT AVG(revenue)
+    FROM branch_stats
+);
