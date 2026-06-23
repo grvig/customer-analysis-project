@@ -639,3 +639,41 @@ AVG(customer_rating)
 
 Complaint Volume:
 COUNT(call_id)
+
+Business KPI Examples
+
+Complaint Rate Per Service:
+
+COUNT(
+    CASE
+        WHEN call_type = 'Complaint'
+        THEN 1
+    END
+)
+/
+COUNT(service_id)
+
+Revenue Per Service:
+
+SUM(service_cost)
+/
+COUNT(service_id)
+
+Average Revenue Per Branch:
+
+SUM(service_cost)
+/
+COUNT(DISTINCT branch)
+
+When calculating percentages or ratios:
+
+Always cast to numeric.
+
+Example:
+
+ROUND(
+    COUNT(*)::numeric
+    / COUNT(service_id),
+    2
+)
+
