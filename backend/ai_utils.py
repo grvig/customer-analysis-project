@@ -191,15 +191,32 @@ def generate_sql(question):
     prompt = f"""
 {schema}
 
+IMPORTANT:
+
+customer_rating exists ONLY in surveys.
+
+service_cost exists ONLY in services.
+
+branch exists ONLY in calls.
+
+Revenue by branch requires:
+
+services
+JOIN calls
+ON services.call_id = calls.call_id
+
+Ratings by branch requires:
+
+surveys
+JOIN services
+ON surveys.service_id = services.service_id
+
+JOIN calls
+ON services.call_id = calls.call_id
+
 Convert the following question into a PostgreSQL SELECT query.
 
 Return ONLY SQL.
-
-Do not explain.
-
-Do not use markdown.
-
-Do not include comments.
 
 Question:
 {question}
@@ -293,7 +310,23 @@ Failed SQL:
 Database Error:
 {error_message}
 
-Generate a corrected PostgreSQL SELECT query.
+IMPORTANT:
+
+Fix ONLY the reported error.
+
+Do not rewrite the entire query.
+
+Keep all correct joins.
+
+Keep all correct filters.
+
+Keep all correct aggregations.
+
+If the error says a column does not exist,
+replace only that column.
+
+If the error says a table alias is wrong,
+replace only that alias.
 
 Return ONLY SQL.
 """

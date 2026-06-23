@@ -701,6 +701,11 @@ Do not infer customer sentiment.
 - Do not repeat numerical values.
 - Do not add currency symbols.
 - Do not mention exact figures already shown in tables.
+- Do not claim correlation unless a correlation value is present.
+- Do not claim trends unless a trend metric is present.
+- Do not claim statistical significance.
+- If the table only contains raw values, describe the values only.
+- Never infer relationships between columns unless explicitly calculated.
 """
 
     summary = call_qwen(prompt)
