@@ -625,3 +625,17 @@ HAVING SUM(service_cost) > 100000
 
 More than 50 complaints:
 HAVING COUNT(*) > 50
+
+Derived Metrics Examples:
+
+Revenue Per Service:
+SUM(service_cost) / COUNT(service_id)
+
+Revenue Per Call:
+SUM(service_cost) / COUNT(call_id)
+
+Average Rating:
+AVG(customer_rating)
+
+Complaint Volume:
+COUNT(call_id)
