@@ -19,7 +19,6 @@ Rules:
 * Do not invent column values.
 * Do not invent tables or columns.
 * Generate the simplest correct query.
-
 Always provide meaningful aliases for calculated columns.
 
 For ranking questions:
@@ -611,3 +610,18 @@ instead of:
 AVG(column_name)
 
 unless the user explicitly requests full precision.
+
+Aggregate Filtering Rules:
+
+- Use WHERE for filtering individual rows.
+- Use HAVING for filtering aggregate values.
+- Examples:
+
+Average rating above 3.5:
+HAVING AVG(customer_rating) > 3.5
+
+Revenue above 100000:
+HAVING SUM(service_cost) > 100000
+
+More than 50 complaints:
+HAVING COUNT(*) > 50

@@ -29,14 +29,18 @@ def format_markdown_table(headers, rows):
 
         for value in row:
             if isinstance(value, int):
-                formatted_row.append(f"{value:,}")
-
+                formatted_row.append(
+                    f"{value:,}"
+                )
             elif isinstance(value, float):
                 if value.is_integer():
-                    formatted_row.append(f"{int(value):,}")
+                    formatted_row.append(
+                        f"{int(value):,}"
+                    )
                 else:
-                    formatted_row.append(f"{value:,.2f}")
-
+                    formatted_row.append(
+                        f"{value:.2f}"
+                    )
             else:
                 formatted_row.append(str(value))
 
@@ -51,6 +55,7 @@ def format_markdown_table(headers, rows):
     print()
 
     return table
+
 
 def call_qwen(prompt):
 

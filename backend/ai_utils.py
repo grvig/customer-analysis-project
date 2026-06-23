@@ -321,6 +321,10 @@ def get_query_results(question):
             "rows": [],
             "error": query_result["error"]
         }
+    
+    print("\nFINAL SQL SUCCESS:")
+    print(sql)
+    print()
 
     return {
         "success": True,
