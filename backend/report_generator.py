@@ -577,10 +577,13 @@ def generate_custom_report(question):
 
 {table}
 """)
-    if (
-        "average customer rating" in question_lower
-        or "average rating" in question_lower
-    ):
+    if question_lower.strip() in [
+        "what is the average customer rating across all surveys?",
+        "what is the average customer rating across all surveys",
+        "average customer rating",
+        "what is the average rating",
+        "average rating"
+    ]:
         rows = execute_query("""
         SELECT
             ROUND(
