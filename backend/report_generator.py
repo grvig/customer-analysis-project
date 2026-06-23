@@ -5,6 +5,7 @@ from config import REPORT_MODEL
 from ai_utils import get_query_results
 from database import execute_custom_query
 from textwrap import dedent
+from decimal import Decimal
 
 def clean_text(text):
 
@@ -32,7 +33,9 @@ def format_markdown_table(headers, rows):
                 formatted_row.append(
                     f"{value:,}"
                 )
-            elif isinstance(value, float):
+            elif isinstance(value, (float, Decimal)):
+                value = float(value)
+
                 if value.is_integer():
                     formatted_row.append(
                         f"{int(value):,}"

@@ -5,6 +5,38 @@ from database import execute_custom_query
 import time
 MAX_SQL_RETRIES = 3
 
+def clean_generated_sql(sql):
+
+    sql = re.sub(
+        r"\bA\s+AS\b",
+        "AS",
+        sql,
+        flags=re.IGNORECASE
+    )
+
+    sql = re.sub(
+        r"\bDESCLIMIT\b",
+        "DESC LIMIT",
+        sql,
+        flags=re.IGNORECASE
+    )
+
+    sql = re.sub(
+        r"\bLIMI\s+LIMIT\b",
+        "LIMIT",
+        sql,
+        flags=re.IGNORECASE
+    )
+
+    sql = re.sub(
+        r"\bDE\s+DESC\b",
+        "DESC",
+        sql,
+        flags=re.IGNORECASE
+    )
+
+    return sql.strip()
+
 def clean_text(text):
 
     text = re.sub(
@@ -191,6 +223,8 @@ SQL:
     sql = sql.replace("\r", " ")
     sql = " ".join(sql.split())
     
+    sql = clean_generated_sql(sql)
+    
     print("\nGENERATED SQL:")
     print(sql)
     print()
@@ -273,10 +307,59 @@ Return ONLY SQL.
     sql = sql.replace("\n", " ")
     sql = sql.replace("\r", " ")
     sql = " ".join(sql.split())
+    
+    sql = clean_generated_sql(sql)
 
     print("\nREGENERATED SQL:")
     print(sql)
     print()
+
+    return sql
+
+def regenerate_empty_result_sql(
+    question,
+    previous_sql
+):
+
+    with open(
+        "schema_context.txt",
+        "r",
+        encoding="utf-8"
+    ) as f:
+
+        schema = f.read()
+
+    prompt = f"""
+{schema}
+
+The SQL query executed successfully.
+
+However it returned ZERO rows.
+
+User Question:
+{question}
+
+Previous SQL:
+{previous_sql}
+
+Generate a less restrictive PostgreSQL query.
+
+Keep the same business intent.
+
+Return ONLY SQL.
+"""
+
+    sql = call_qwen(prompt)
+
+    sql = sql.replace("```sql", "")
+    sql = sql.replace("```", "")
+    sql = sql.strip()
+
+    sql = sql.replace("\n", " ")
+    sql = sql.replace("\r", " ")
+    sql = " ".join(sql.split())
+    
+    sql = clean_generated_sql(sql)
 
     return sql
 
@@ -292,6 +375,25 @@ def get_query_results(question):
     query_result = execute_custom_query(
         sql
     )
+
+    if (
+        query_result["success"]
+        and len(query_result["rows"]) == 0
+    ):
+
+        print("\nEMPTY RESULT DETECTED")
+
+        sql = regenerate_empty_result_sql(
+            question,
+            sql
+        )
+
+        print("\nEMPTY RESULT RETRY SQL:")
+        print(sql)
+
+        query_result = execute_custom_query(
+            sql
+        )
 
     for attempt in range(MAX_SQL_RETRIES):
 
