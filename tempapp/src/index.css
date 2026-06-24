@@ -597,8 +597,9 @@ body.dark-mode table {
 }
 
 body.dark-mode th {
-  background: #1e293b;
+  background: #334155;
   color: #ffffff;
+  font-weight: 700;
 }
 
 body.dark-mode td {
