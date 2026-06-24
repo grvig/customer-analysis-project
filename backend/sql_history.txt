@@ -493,3 +493,115 @@ True
 
 Error:
 None
+
+============================================================
+Timestamp: 2026-06-24 11:24:02.070313
+
+Question:
+Which branches improved customer satisfaction over time?
+
+Generated SQL:
+WITH branch_stats AS ( SELECT DATE_TRUNC('month', s.service_date) AS month, AVG(s.customer_rating) AS avg_rating FROM surveys s JOIN services svc ON s.service_id = svc.service_id JOIN calls c ON svc.call_id = c.call_id GROUP BY month ), avg_stats AS ( SELECT AVG(avg_rating) AS overall_avg_rating FROM branch_stats ) SELECT bs.month, bs.avg_rating, CASE WHEN bs.avg_rating > a.overall_avg_rating THEN 'Improved' ELSE 'Deteriorated' END AS satisfaction_trend FROM branch_stats bs, avg_stats a ORDER BY bs.month;
+
+Final SQL:
+WITH branch_stats AS ( SELECT DATE_TRUNC('month', svc.service_date) AS month, AVG(s.customer_rating) AS avg_rating FROM surveys s JOIN services svc ON s.service_id = svc.service_id JOIN calls c ON svc.call_id = c.call_id GROUP BY month ), avg_stats AS ( SELECT AVG(avg_rating) AS overall_avg_rating FROM branch_stats ) SELECT bs.month, bs.avg_rating, CASE WHEN bs.avg_rating > a.overall_avg_rating THEN 'Improved' ELSE 'Deteriorated' END AS satisfaction_trend FROM branch_stats bs JOIN avg_stats a ON 1=1 ORDER BY bs.month;
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-24 11:32:01.830138
+
+Question:
+Which branches improved customer satisfaction over time?
+
+Generated SQL:
+WITH branch_ratings AS ( SELECT DATE_TRUNC('month', c.call_date) AS month, AVG(s.customer_rating) AS avg_rating, b.branch FROM surveys s JOIN services se ON s.service_id = se.service_id JOIN calls c ON se.call_id = c.call_id GROUP BY month, b.branch ), avg_rating_overall AS ( SELECT AVG(avg_rating) AS avg_rating FROM branch_ratings ) SELECT mr.month, mr.branch, mr.avg_rating, (mr.avg_rating - aro.avg_rating) AS rating_change FROM branch_ratings mr JOIN avg_rating_overall aro ON true ORDER BY mr.month, mr.rating_change DESC;
+
+Final SQL:
+WITH branch_ratings AS ( SELECT DATE_TRUNC('month', s.service_date) AS month, AVG(s.customer_rating) AS avg_rating, c.branch AS branch_name FROM surveys s JOIN services se ON s.service_id = se.service_id JOIN calls c ON se.call_id = c.call_id GROUP BY month, c.branch ), avg_rating_overall AS ( SELECT AVG(avg_rating) AS avg_rating FROM branch_ratings ) SELECT mr.month, mr.branch_name, mr.avg_rating, (mr.avg_rating - aro.avg_rating) AS rating_change FROM branch_ratings mr JOIN avg_rating_overall aro ON true ORDER BY mr.month, mr.rating_change DESC;
+
+Retries:
+3
+
+Success:
+False
+
+Error:
+column s.service_date does not exist
+LINE 1: ...TH branch_ratings AS ( SELECT DATE_TRUNC('month', s.service_...
+                                                             ^
+HINT:  Perhaps you meant to reference the column "se.service_date".
+
+
+============================================================
+Timestamp: 2026-06-24 11:33:13.570584
+
+Question:
+Which branches improved customer satisfaction over time?
+
+Generated SQL:
+WITH branch_stats AS ( SELECT DATE_TRUNC('month', s.service_date) AS month, AVG(s.customer_rating) AS avg_rating FROM surveys s JOIN services se ON s.service_id = se.service_id GROUP BY month ), overall_avg AS ( SELECT AVG(avg_rating) AS overall_avg_rating FROM branch_stats ) SELECT bs.month, bs.avg_rating, (bs.avg_rating - o.overall_avg_rating) * 100 / o.overall_avg_rating AS improvement_percentage FROM branch_stats bs, overall_avg o ORDER BY bs.month;
+
+Final SQL:
+WITH branch_stats AS ( SELECT DATE_TRUNC('month', se.service_date) AS month, AVG(s.customer_rating) AS avg_rating FROM surveys s JOIN services se ON s.service_id = se.service_id GROUP BY month ), overall_avg AS ( SELECT AVG(avg_rating) AS overall_avg_rating FROM branch_stats ) SELECT bs.month, bs.avg_rating, (bs.avg_rating - o.overall_avg_rating) * 100 / o.overall_avg_rating AS improvement_percentage FROM branch_stats bs JOIN overall_avg o ON true ORDER BY bs.month;
+
+Retries:
+2
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-24 11:34:26.875214
+
+Question:
+Which branches improved customer satisfaction over time?
+
+Generated SQL:
+WITH branch_stats AS ( SELECT DATE_TRUNC('month', s.service_date) AS month, AVG(s.customer_rating) AS avg_rating, SUM(s.service_cost) AS revenue FROM surveys s JOIN services se ON s.service_id = se.service_id JOIN calls c ON se.call_id = c.call_id GROUP BY DATE_TRUNC('month', s.service_date) ), avg_stats AS ( SELECT AVG(avg_rating) AS avg_avg_rating, AVG(revenue) AS avg_revenue FROM branch_stats ) SELECT month, avg_rating, revenue, (avg_rating - (SELECT avg_avg_rating FROM avg_stats)) AS rating_change, (revenue - (SELECT avg_revenue FROM avg_stats)) / (SELECT avg_revenue FROM avg_stats) * 100 AS revenue_change_percentage FROM branch_stats ORDER BY month;
+
+Final SQL:
+WITH branch_stats AS ( SELECT DATE_TRUNC('month', se.service_date) AS month, AVG(s.customer_rating) AS avg_rating, SUM(se.service_cost) AS revenue FROM surveys s JOIN services se ON s.service_id = se.service_id JOIN calls c ON se.call_id = c.call_id GROUP BY DATE_TRUNC('month', se.service_date) ), avg_stats AS ( SELECT AVG(avg_rating) AS avg_avg_rating, AVG(revenue) AS avg_revenue FROM branch_stats ) SELECT month, avg_rating, revenue, (avg_rating - (SELECT avg_avg_rating FROM avg_stats)) AS rating_change, ((revenue - (SELECT avg_revenue FROM avg_stats)) / (SELECT avg_revenue FROM avg_stats)) * 100 AS revenue_change_percentage FROM branch_stats ORDER BY month;
+
+Retries:
+1
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-24 11:59:36.737843
+
+Question:
+How many customers are there?
+
+Generated SQL:
+SELECT COUNT(*) AS customer_count FROM customers;
+
+Final SQL:
+SELECT COUNT(*) AS customer_count FROM customers;
+
+Validation Passed:
+True
+
+Validation Errors:
+[]
+
+Retries:
+0
+
+Success:
+True
+
+Error:
+None

@@ -106,7 +106,10 @@ def log_sql(
     generated_sql,
     final_sql,
     success,
-    error
+    error,
+    retry_count,
+    validation_passed,
+    validation_errors
 ):
 
     try:
@@ -142,6 +145,21 @@ def log_sql(
                 f"Final SQL:\n"
                 f"{final_sql}\n\n"
             )
+            
+            f.write(
+                f"Validation Passed:\n"
+                f"{validation_passed}\n\n"
+            )
+
+            f.write(
+                f"Validation Errors:\n"
+                f"{validation_errors}\n\n"
+            )
+            
+            f.write(
+                f"Retries:\n"
+                f"{retry_count}\n\n"
+            )
 
             f.write(
                 f"Success:\n"
@@ -158,6 +176,38 @@ def log_sql(
         print(
             f"Logging error: {e}"
         )
+        
+def validate_sql(sql):
+
+    errors = []
+
+    invalid_patterns = [
+        ("services.customer_rating",
+         "customer_rating exists only in surveys"),
+
+        ("calls.service_id",
+         "calls does not contain service_id"),
+
+        ("calls.service_cost",
+         "service_cost exists only in services"),
+
+        ("services.branch",
+         "branch exists only in calls"),
+
+        ("services.survey_id",
+         "survey_id exists only in surveys")
+    ]
+
+    for pattern, message in invalid_patterns:
+
+        if pattern.lower() in sql.lower():
+
+            errors.append(message)
+
+    return {
+        "valid": len(errors) == 0,
+        "errors": errors
+    }
 
 def clean_text(text):
 
@@ -601,6 +651,7 @@ def get_query_results(question):
 
 def ask_ai(question):
     start_time = time.time()
+    retry_count = 0
 
     try:
 
@@ -608,14 +659,35 @@ def ask_ai(question):
 
         sql = generated_sql
 
+        validation = validate_sql(sql)
+        
+        validation_passed = validation["valid"]
+
+        validation_errors = validation["errors"]
+
+        if not validation["valid"]:
+
+            print(
+                "SQL Validation Failed:",
+                validation["errors"]
+            )
+
+            sql = regenerate_sql(
+                question,
+                sql,
+                ", ".join(
+                    validation["errors"]
+                )
+            )
+
         query_result = execute_custom_query(
             sql
         )
 
-        for _ in range(MAX_SQL_RETRIES):
+        for attempt in range(MAX_SQL_RETRIES):
             if query_result["success"]:
                 break
-
+            retry_count += 1
             sql = regenerate_sql(
                 question,
                 sql,
@@ -625,7 +697,6 @@ def ask_ai(question):
             print("\n========== QUERY RESULT ==========")
             print(query_result)
             print("==================================\n")
-
 
         if not query_result["success"]:
             execution_time = round(
@@ -638,7 +709,10 @@ def ask_ai(question):
                 generated_sql,
                 sql,
                 False,
-                query_result["error"]
+                query_result["error"],
+                retry_count,
+                validation_passed,
+                validation_errors
             )
 
             return {
@@ -666,7 +740,10 @@ def ask_ai(question):
             generated_sql,
             sql,
             True,
-            None
+            None,
+            retry_count,
+            validation_passed,
+            validation_errors
         )
 
         return {
