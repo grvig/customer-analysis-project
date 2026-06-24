@@ -12,6 +12,19 @@ def clean_text(text):
     text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
     text = text.replace('\u001b', '')
     text = text.strip()
+    
+    text = re.sub(
+        r"\b(\w+)\s+\1\b",
+        r"\1",
+        text,
+        flags=re.IGNORECASE
+    )
+    
+    text = re.sub(
+        r"\b([A-Za-z]{2,})\s+([A-Za-z]{2,})\s+\2\b",
+        r"\1 \2",
+        text
+    )
 
     return text
 
