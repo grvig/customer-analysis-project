@@ -35,6 +35,33 @@ def clean_generated_sql(sql):
         flags=re.IGNORECASE
     )
 
+    sql = re.sub(
+        r"\bAS\s+AS\b",
+        "AS",
+        sql,
+        flags=re.IGNORECASE
+    )
+
+    sql = re.sub(
+        r"\bD\s+DESC\b",
+        "DESC",
+        sql,
+        flags=re.IGNORECASE
+    )
+
+    sql = re.sub(
+        r"\b(\w+)\s+\1\b",
+        r"\1",
+        sql,
+        flags=re.IGNORECASE
+    )
+
+    sql = re.sub(
+        r"\s+",
+        " ",
+        sql
+    )
+
     return sql.strip()
 
 def clean_text(text):
