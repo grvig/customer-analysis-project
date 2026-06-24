@@ -190,6 +190,16 @@ Rules:
 - Do not repeat numerical values.
 - Do not add currency symbols.
 - Do not mention exact figures already shown in tables.
+
+IMPORTANT:
+
+Only discuss facts directly visible in the provided data.
+
+Do not describe any item as highest, lowest, best, worst, increasing, decreasing, improving, declining, stronger, weaker, or outperforming unless that fact is explicitly visible in the data.
+
+Do not recommend branch closures, staffing changes, marketing campaigns, process improvements, or operational actions unless directly supported by the data.
+
+If the data does not clearly support a recommendation, provide a general monitoring recommendation instead.
 """
 
     summary = call_qwen(prompt)
@@ -294,6 +304,16 @@ Rules:
 - Do not repeat numerical values.
 - Do not add currency symbols.
 - Do not mention exact figures already shown in tables.
+
+IMPORTANT:
+
+Only discuss facts directly visible in the provided data.
+
+Do not describe any item as highest, lowest, best, worst, increasing, decreasing, improving, declining, stronger, weaker, or outperforming unless that fact is explicitly visible in the data.
+
+Do not recommend branch closures, staffing changes, marketing campaigns, process improvements, or operational actions unless directly supported by the data.
+
+If the data does not clearly support a recommendation, provide a general monitoring recommendation instead.
 """
 
     summary = call_qwen(prompt)
@@ -410,6 +430,16 @@ Rules:
 - Do not repeat numerical values.
 - Do not add currency symbols.
 - Do not mention exact figures already shown in tables.
+
+IMPORTANT:
+
+Only discuss facts directly visible in the provided data.
+
+Do not describe any item as highest, lowest, best, worst, increasing, decreasing, improving, declining, stronger, weaker, or outperforming unless that fact is explicitly visible in the data.
+
+Do not recommend branch closures, staffing changes, marketing campaigns, process improvements, or operational actions unless directly supported by the data.
+
+If the data does not clearly support a recommendation, provide a general monitoring recommendation instead.
 """
 
     summary = call_qwen(prompt)
@@ -519,6 +549,16 @@ Rules:
 - Do not repeat numerical values.
 - Do not add currency symbols.
 - Do not mention exact figures already shown in tables.
+
+IMPORTANT:
+
+Only discuss facts directly visible in the provided data.
+
+Do not describe any item as highest, lowest, best, worst, increasing, decreasing, improving, declining, stronger, weaker, or outperforming unless that fact is explicitly visible in the data.
+
+Do not recommend branch closures, staffing changes, marketing campaigns, process improvements, or operational actions unless directly supported by the data.
+
+If the data does not clearly support a recommendation, provide a general monitoring recommendation instead.
 """
 
     summary = call_qwen(prompt)
@@ -706,6 +746,16 @@ Do not infer customer sentiment.
 - Do not claim statistical significance.
 - If the table only contains raw values, describe the values only.
 - Never infer relationships between columns unless explicitly calculated.
+
+IMPORTANT:
+
+Only discuss facts directly visible in the provided data.
+
+Do not describe any item as highest, lowest, best, worst, increasing, decreasing, improving, declining, stronger, weaker, or outperforming unless that fact is explicitly visible in the data.
+
+Do not recommend branch closures, staffing changes, marketing campaigns, process improvements, or operational actions unless directly supported by the data.
+
+If the data does not clearly support a recommendation, provide a general monitoring recommendation instead.
 """
 
     summary = call_qwen(prompt)
