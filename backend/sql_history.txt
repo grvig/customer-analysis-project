@@ -16,3 +16,183 @@ True
 
 Error:
 None
+
+============================================================
+Timestamp: 2026-06-24 10:21:10.089769
+
+Question:
+Which branch generated the highest revenue?
+
+Generated SQL:
+SELECT c.branch, SUM(s.service_cost) AS total_revenue FROM services s JOIN calls c ON s.call_id = c.call_id GROUP BY c.branch ORDER BY total_revenue DESC LIMIT 1;
+
+Final SQL:
+SELECT c.branch, SUM(s.service_cost) AS total_revenue FROM services s JOIN calls c ON s.call_id = c.call_id GROUP BY c.branch ORDER BY total_revenue DESC LIMIT 1;
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-24 10:21:59.091024
+
+Question:
+Which branches have above average revenue?
+
+Generated SQL:
+WITH branch_revenue AS ( SELECT c.branch, SUM(s.service_cost) AS total_revenue FROM services s JOIN calls c ON s.call_id = c.call_id GROUP BY c.branch ) SELECT br.branch, br.total_revenue FROM branch_revenue br WHERE br.total_revenue > ( SELECT AVG(total_revenue) FROM branch_revenue );
+
+Final SQL:
+WITH branch_revenue AS ( SELECT c.branch, SUM(s.service_cost) AS total_revenue FROM services s JOIN calls c ON s.call_id = c.call_id GROUP BY c.branch ) SELECT br.branch, br.total_revenue FROM branch_revenue br WHERE br.total_revenue > ( SELECT AVG(total_revenue) FROM branch_revenue );
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-24 10:22:32.490955
+
+Question:
+Show the top 5 vehicle models with the most complaints.
+
+Generated SQL:
+SELECT v.model, COUNT(c.call_id) AS complaint_count FROM calls c JOIN vehicles v ON c.vehicle_id = v.vehicle_id WHERE c.call_type = 'Complaint' GROUP BY v.model ORDER BY complaint_count DESC LIMIT 5;
+
+Final SQL:
+SELECT v.model, COUNT(c.call_id) AS complaint_count FROM calls c JOIN vehicles v ON c.vehicle_id = v.vehicle_id WHERE c.call_type = 'Complaint' GROUP BY v.model ORDER BY complaint_count DESC LIMIT 5;
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-24 10:23:26.119542
+
+Question:
+Which agents handled the most high priority complaints?
+
+Generated SQL:
+SELECT a.agent_name, COUNT(*) AS complaint_count FROM calls c JOIN agents a ON c.agent_id = a.agent_id WHERE c.call_type = 'Complaint' AND c.priority = 'High' GROUP BY a.agent_name ORDER BY complaint_count DESC LIMIT 5;
+
+Final SQL:
+SELECT a.agent_name, COUNT(*) AS complaint_count FROM calls c JOIN agents a ON c.agent_id = a.agent_id WHERE c.call_type = 'Complaint' AND c.priority = 'High' GROUP BY a.agent_name ORDER BY complaint_count DESC LIMIT 5;
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-24 10:24:38.422096
+
+Question:
+Which branch has the highest average customer rating?
+
+Generated SQL:
+SELECT c.branch, AVG(s.customer_rating) AS avg_customer_rating FROM surveys s JOIN services se ON s.service_id = se.service_id JOIN calls ca ON se.call_id = ca.call_id GROUP BY c.branch ORDER BY avg_customer_rating DESC LIMIT 1;
+
+Final SQL:
+SELECT ca.branch, AVG(s.customer_rating) AS avg_customer_rating FROM surveys s JOIN services se ON s.service_id = se.service_id JOIN calls ca ON se.call_id = ca.call_id GROUP BY ca.branch ORDER BY avg_customer_rating DESC LIMIT 1;
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-24 10:25:05.544078
+
+Question:
+Show branches with revenue above 100000.
+
+Generated SQL:
+SELECT c.branch, SUM(s.service_cost) AS revenue FROM services s JOIN calls c ON s.call_id = c.call_id GROUP BY c.branch HAVING SUM(s.service_cost) > 100000;
+
+Final SQL:
+SELECT c.branch, SUM(s.service_cost) AS revenue FROM services s JOIN calls c ON s.call_id = c.call_id GROUP BY c.branch HAVING SUM(s.service_cost) > 100000;
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-24 10:26:46.953471
+
+Question:
+Which vehicle models have low ratings but high service frequency?
+
+Generated SQL:
+SELECT v.model, AVG(s.customer_rating) AS average_rating, COUNT(c.call_id) AS call_frequency FROM calls c JOIN vehicles v ON c.vehicle_id = v.vehicle_id JOIN services s ON c.call_id = s.call_id JOIN surveys su ON s.service_id = su.service_id WHERE su.customer_rating < 3 GROUP BY v.model ORDER BY call_frequency DESC;
+
+Final SQL:
+SELECT v.model, AVG(su.customer_rating) AS average_rating, COUNT(c.call_id) AS call_frequency FROM calls c JOIN vehicles v ON c.vehicle_id = v.vehicle_id JOIN services s ON c.call_id = s.call_id JOIN surveys su ON s.service_id = su.service_id WHERE su.customer_rating < 3 GROUP BY v.model ORDER BY call_frequency DESC;
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-24 10:27:18.685946
+
+Question:
+Which complaint categories occur most frequently in high priority complaints?
+
+Generated SQL:
+SELECT issue_category, COUNT(*) AS complaint_count FROM calls WHERE call_type = 'Complaint' AND priority = 'High' GROUP BY issue_category ORDER BY complaint_count DESC LIMIT 5;
+
+Final SQL:
+SELECT issue_category, COUNT(*) AS complaint_count FROM calls WHERE call_type = 'Complaint' AND priority = 'High' GROUP BY issue_category ORDER BY complaint_count DESC LIMIT 5;
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-24 10:27:47.213486
+
+Question:
+Show the top 5 branches by complaint volume.
+
+Generated SQL:
+SELECT branch, COUNT(*) AS complaint_count FROM calls WHERE call_type = 'Complaint' GROUP BY branch ORDER BY complaint_count DESC LIMIT 5;
+
+Final SQL:
+SELECT branch, COUNT(*) AS complaint_count FROM calls WHERE call_type = 'Complaint' GROUP BY branch ORDER BY complaint_count DESC LIMIT 5;
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-24 10:28:08.753737
+
+Question:
+Which branches have above average revenue but below average customer ratings?
+
+Generated SQL:
+WITH branch_stats AS ( SELECT c.branch, SUM(s.service_cost) AS revenue, AVG(sr.customer_rating) AS avg_rating FROM services s JOIN calls c ON s.call_id = c.call_id JOIN surveys sr ON s.service_id = sr.service_id GROUP BY c.branch ) SELECT branch FROM branch_stats WHERE revenue > (SELECT AVG(revenue) FROM branch_stats) AND avg_rating < (SELECT AVG(avg_rating) FROM branch_stats);
+
+Final SQL:
+WITH branch_stats AS ( SELECT c.branch, SUM(s.service_cost) AS revenue, AVG(sr.customer_rating) AS avg_rating FROM services s JOIN calls c ON s.call_id = c.call_id JOIN surveys sr ON s.service_id = sr.service_id GROUP BY c.branch ) SELECT branch FROM branch_stats WHERE revenue > (SELECT AVG(revenue) FROM branch_stats) AND avg_rating < (SELECT AVG(avg_rating) FROM branch_stats);
+
+Success:
+True
+
+Error:
+None

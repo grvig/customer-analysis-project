@@ -800,3 +800,33 @@ the query joins surveys, services and calls.
 Do not answer a different business question.
 
 The SQL must directly answer the user's question.
+
+Semantic Interpretation Examples
+
+Question:
+Which vehicle models have low ratings but high service frequency?
+
+Interpretation:
+
+Low ratings means:
+AVG(customer_rating) < overall average rating
+
+High service frequency means:
+COUNT(service_id) > overall average service count
+
+The SQL should enforce BOTH conditions.
+
+--------------------------------------------------
+
+Question:
+Which branches have above average revenue but below average ratings?
+
+Interpretation:
+
+Revenue > average revenue
+
+AND
+
+Average rating < average rating across branches
+
+The SQL should enforce BOTH conditions.
