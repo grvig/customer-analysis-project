@@ -3,6 +3,8 @@ from config import MODEL_NAME
 import re
 from database import execute_custom_query
 import time
+from datetime import datetime
+
 MAX_SQL_RETRIES = 3
 
 def clean_generated_sql(sql):
@@ -64,6 +66,64 @@ def clean_generated_sql(sql):
 
     return sql.strip()
 
+def log_sql(
+    question,
+    generated_sql,
+    final_sql,
+    success,
+    error
+):
+
+    try:
+
+        with open(
+            "sql_history.txt",
+            "a",
+            encoding="utf-8"
+        ) as f:
+
+            f.write(
+                "\n" +
+                "=" * 60 +
+                "\n"
+            )
+
+            f.write(
+                f"Timestamp: "
+                f"{datetime.now()}\n\n"
+            )
+
+            f.write(
+                f"Question:\n"
+                f"{question}\n\n"
+            )
+
+            f.write(
+                f"Generated SQL:\n"
+                f"{generated_sql}\n\n"
+            )
+
+            f.write(
+                f"Final SQL:\n"
+                f"{final_sql}\n\n"
+            )
+
+            f.write(
+                f"Success:\n"
+                f"{success}\n\n"
+            )
+
+            f.write(
+                f"Error:\n"
+                f"{error}\n"
+            )
+
+    except Exception as e:
+
+        print(
+            f"Logging error: {e}"
+        )
+
 def clean_text(text):
 
     text = re.sub(
@@ -78,7 +138,7 @@ def clean_text(text):
     )
 
     text = text.strip()
-    
+
     lines = text.split("\n")
     fixed_lines = []
 
@@ -501,7 +561,9 @@ def ask_ai(question):
 
     try:
 
-        sql = generate_sql(question)
+        generated_sql = generate_sql(question)
+
+        sql = generated_sql
 
         query_result = execute_custom_query(
             sql
@@ -527,6 +589,14 @@ def ask_ai(question):
                 time.time() - start_time,
                 2
             )
+            
+            log_sql(
+                question,
+                generated_sql,
+                sql,
+                False,
+                query_result["error"]
+            )
 
             return {
                 "success": False,
@@ -546,6 +616,14 @@ def ask_ai(question):
         execution_time = round(
             time.time() - start_time,
             2
+        )
+        
+        log_sql(
+            question,
+            generated_sql,
+            sql,
+            True,
+            None
         )
 
         return {
