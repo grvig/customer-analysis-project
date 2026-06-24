@@ -63,6 +63,41 @@ def clean_generated_sql(sql):
         " ",
         sql
     )
+    
+    sql = re.sub(
+        r"\bPARTITION\s+\w+\s+BY\b",
+        "PARTITION BY",
+        sql,
+        flags=re.IGNORECASE
+    )
+    
+    sql = re.sub(
+        r"\bJOIN\s+\w+\s+(services|calls|vehicles|customers|agents|surveys)\b",
+        r"JOIN \1",
+        sql,
+        flags=re.IGNORECASE
+    )
+    
+    sql = re.sub(
+        r"\b(\w+)\s+\1\.",
+        r"\1.",
+        sql,
+        flags=re.IGNORECASE
+    )
+    
+    sql = re.sub(
+        r"\b(\w+)\s+\1_(\w+)\b",
+        r"\1_\2",
+        sql,
+        flags=re.IGNORECASE
+    )
+    
+    sql = re.sub(
+        r"\bA\s+AND\b",
+        "AND",
+        sql,
+        flags=re.IGNORECASE
+    )
 
     return sql.strip()
 
@@ -287,6 +322,14 @@ service_cost exists ONLY in services.
 branch exists ONLY in calls.
 
 Revenue by branch requires:
+
+If ratings are requested:
+
+ALWAYS use surveys.customer_rating.
+
+NEVER use services.customer_rating.
+
+NEVER use calls.customer_rating.
 
 services
 JOIN calls
