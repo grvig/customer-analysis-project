@@ -696,3 +696,107 @@ WHERE revenue > (
     SELECT AVG(revenue)
     FROM branch_stats
 );
+
+==================================================
+CRITICAL VALIDATION RULES
+==================================================
+
+Before generating SQL, verify:
+
+1. Every column exists in its table.
+
+2. Every JOIN follows a defined relationship.
+
+3. Do not invent columns.
+
+4. Do not invent tables.
+
+5. Do not use columns from incorrect tables.
+
+Examples:
+
+CORRECT:
+surveys.customer_rating
+
+WRONG:
+services.customer_rating
+
+CORRECT:
+surveys.survey_id
+
+WRONG:
+services.survey_id
+
+CORRECT:
+services.service_cost
+
+WRONG:
+calls.service_cost
+
+CORRECT:
+calls.branch
+
+WRONG:
+services.branch
+
+==================================================
+REQUIRED JOIN PATHS
+==================================================
+
+Revenue By Branch:
+
+services
+JOIN calls
+ON services.call_id = calls.call_id
+
+Ratings By Branch:
+
+surveys
+JOIN services
+ON surveys.service_id = services.service_id
+
+JOIN calls
+ON services.call_id = calls.call_id
+
+Vehicle Complaints:
+
+calls
+JOIN vehicles
+ON calls.vehicle_id = vehicles.vehicle_id
+
+Agent Analysis:
+
+calls
+JOIN agents
+ON calls.agent_id = agents.agent_id
+
+Customer Analysis:
+
+calls
+JOIN customers
+ON calls.customer_id = customers.customer_id
+
+==================================================
+SEMANTIC VALIDATION
+==================================================
+
+Before returning SQL, verify:
+
+If the question asks about revenue,
+the query uses service_cost.
+
+If the question asks about ratings,
+the query uses customer_rating.
+
+If the question asks about complaints,
+the query uses call_type = 'Complaint'.
+
+If the question asks about branch revenue,
+the query joins services and calls.
+
+If the question asks about branch ratings,
+the query joins surveys, services and calls.
+
+Do not answer a different business question.
+
+The SQL must directly answer the user's question.
