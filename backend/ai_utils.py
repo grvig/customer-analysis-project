@@ -1,4 +1,5 @@
 import subprocess
+import os
 from config import MODEL_NAME
 import re
 from database import execute_custom_query
