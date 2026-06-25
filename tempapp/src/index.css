@@ -323,6 +323,22 @@ textarea {
     gap: 12px;
   }
 }
+.error-box {
+  margin-top: 20px;
+  padding: 15px 20px;
+  background: #fff3f3;
+  border: 1px solid #f87171;
+  border-radius: var(--radius);
+  color: #b91c1c;
+  font-weight: 500;
+}
+
+body.dark-mode .error-box {
+  background: #3b1515;
+  border-color: #f87171;
+  color: #fca5a5;
+}
+
 .loading-container {
   display: flex;
   align-items: center;

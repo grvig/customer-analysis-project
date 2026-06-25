@@ -4,6 +4,7 @@ import {
   generateCustomReport,
   downloadPdfReport,
 } from "../services/reportService";
+import { API_BASE_URL } from "../services/api";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -12,42 +13,35 @@ export default function Reports() {
   const [report, setReport] = useState("");
   const [customQuestion, setCustomQuestion] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleGenerate = async () => {
     try {
       setLoading(true);
+      setError(null);
 
       const data = await generateReport(type);
 
       setReport(data.report);
-    } catch (error) {
-      console.error(error);
-
-      setReport(
-        "Failed to generate report. Please try again."
-      );
+    } catch (err) {
+      setError("Failed to generate report. Make sure the backend is running.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleCustomReport = async () => {
-    if (!customQuestion.trim()) {
-      setReport("Please enter a report request.");
-      return;
-    }
+    if (!customQuestion.trim()) return;
+
     try {
       setLoading(true);
+      setError(null);
 
       const data = await generateCustomReport(customQuestion);
 
       setReport(data.report);
-    } catch (error) {
-      console.error(error);
-
-      setReport(
-        "Failed to generate custom report. Please try again."
-      );
+    } catch (err) {
+      setError("Failed to generate custom report. Make sure the backend is running.");
     } finally {
       setLoading(false);
     }
@@ -55,14 +49,15 @@ export default function Reports() {
 
   const handleDownloadPdf = async () => {
     try {
+      setError(null);
       const data = await downloadPdfReport(type);
 
       window.open(
-        `http://localhost:8000${data.download_url}`,
+        `${API_BASE_URL}${data.download_url}`,
         "_blank"
       );
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      setError("Failed to download PDF. Make sure the backend is running.");
     }
   };
 
@@ -123,6 +118,12 @@ export default function Reports() {
           <p>
             Analyzing data and generating report...
           </p>
+        </div>
+      )}
+
+      {error && (
+        <div className="error-box">
+          <p>{error}</p>
         </div>
       )}
 

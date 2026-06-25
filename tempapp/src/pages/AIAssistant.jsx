@@ -5,6 +5,7 @@ export default function AIAssistant() {
   const [question, setQuestion] = useState("");
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [history, setHistory] = useState([]);
 
   const handleAsk = async () => {
@@ -13,8 +14,14 @@ export default function AIAssistant() {
     try {
       setLoading(true);
       setResponse(null);
+      setError(null);
 
       const data = await askQuestion(question);
+
+      if (!data.success) {
+        setError(data.error || "The AI could not answer this question.");
+        return;
+      }
 
       setResponse(data);
 
@@ -22,14 +29,8 @@ export default function AIAssistant() {
         question,
         ...prev.filter((q) => q !== question).slice(0, 4),
       ]);
-    } catch (error) {
-      console.error(error);
-
-      setResponse({
-        sql: "Error",
-        rows: [],
-        answer: "Failed to retrieve data.",
-      });
+    } catch (err) {
+      setError("Could not reach the server. Make sure the backend is running.");
     } finally {
       setLoading(false);
     }
@@ -72,6 +73,12 @@ export default function AIAssistant() {
           <p>
             Generating SQL and retrieving insights...
           </p>
+        </div>
+      )}
+
+      {error && (
+        <div className="error-box">
+          <p>{error}</p>
         </div>
       )}
 

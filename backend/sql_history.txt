@@ -1,0 +1,27 @@
+
+============================================================
+Timestamp: 2026-06-25 11:41:05.911978
+
+Question:
+how many customers are there
+
+Generated SQL:
+SELECT COUNT(*) AS customer_count FROM customers;
+
+Final SQL:
+SELECT COUNT(*) AS customer_count FROM customers;
+
+Validation Passed:
+True
+
+Validation Errors:
+[]
+
+Retries:
+0
+
+Success:
+True
+
+Error:
+None
