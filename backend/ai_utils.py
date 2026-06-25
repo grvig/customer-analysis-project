@@ -340,7 +340,7 @@ def call_qwen(prompt):
             capture_output=True,
             text=True,
             encoding="utf-8",
-            timeout=180
+            timeout=int(os.getenv("AI_TIMEOUT", 60))
         )
 
         if result.returncode != 0:
@@ -372,44 +372,16 @@ def generate_sql(question):
     prompt = f"""
 {schema}
 
-IMPORTANT:
+Column constraints:
+- customer_rating: surveys only
+- service_cost: services only
+- branch: calls only
+- Revenue by branch: JOIN services ON services.call_id = calls.call_id
+- Ratings by branch: JOIN surveys ON surveys.service_id = services.service_id, then JOIN calls ON services.call_id = calls.call_id
 
-customer_rating exists ONLY in surveys.
+Return ONLY a PostgreSQL SELECT query. No explanation.
 
-service_cost exists ONLY in services.
-
-branch exists ONLY in calls.
-
-Revenue by branch requires:
-
-If ratings are requested:
-
-ALWAYS use surveys.customer_rating.
-
-NEVER use services.customer_rating.
-
-NEVER use calls.customer_rating.
-
-services
-JOIN calls
-ON services.call_id = calls.call_id
-
-Ratings by branch requires:
-
-surveys
-JOIN services
-ON surveys.service_id = services.service_id
-
-JOIN calls
-ON services.call_id = calls.call_id
-
-Convert the following question into a PostgreSQL SELECT query.
-
-Return ONLY SQL.
-
-Question:
-{question}
-
+Question: {question}
 SQL:
 """
 
@@ -436,31 +408,10 @@ SQL:
 def explain_results(question, rows):
 
     prompt = f"""
-You are a business analytics assistant.
+Summarize these business query results in under 50 words. Professional tone. No SQL or database references. No invented data, units, or currency symbols. Describe only what is visible in the results.
 
-User Question:
-{question}
-
-Database Result:
-{rows}
-
-Provide a concise professional summary.
-
-Rules:
-
-- Do not mention SQL.
-- Do not mention databases.
-- Do not invent information.
-- Only discuss information visible in the results.
-- Do not assume currency symbols.
-- Do not infer units, currencies, percentages, or ratings.
-- Do not create numbered lists.
-- Summarize the key insight only.
-- Keep response under 50 words.
-- Use professional business language.
-- Mention only the most important findings.
-- Avoid repeating all rows from the result.
-- If many rows are returned, summarize overall trends.
+Question: {question}
+Results: {rows}
 """
 
     answer = call_qwen(prompt)
@@ -484,36 +435,12 @@ def regenerate_sql(
     prompt = f"""
 {schema}
 
-The previous SQL failed.
+Fix ONLY the reported error in this SQL query. Do not rewrite the entire query — keep all correct joins, filters, and aggregations. Return ONLY fixed SQL.
 
-Question:
-{question}
-
-Failed SQL:
-{failed_sql}
-
-Database Error:
-{error_message}
-
-IMPORTANT:
-
-Fix ONLY the reported error.
-
-Do not rewrite the entire query.
-
-Keep all correct joins.
-
-Keep all correct filters.
-
-Keep all correct aggregations.
-
-If the error says a column does not exist,
-replace only that column.
-
-If the error says a table alias is wrong,
-replace only that alias.
-
-Return ONLY SQL.
+Question: {question}
+Failed SQL: {failed_sql}
+Error: {error_message}
+SQL:
 """
 
     sql = call_qwen(prompt)
@@ -548,21 +475,11 @@ def regenerate_empty_result_sql(
     prompt = f"""
 {schema}
 
-The SQL query executed successfully.
+The previous SQL returned zero rows. Write a less restrictive version with the same intent. Return ONLY SQL.
 
-However it returned ZERO rows.
-
-User Question:
-{question}
-
-Previous SQL:
-{previous_sql}
-
-Generate a less restrictive PostgreSQL query.
-
-Keep the same business intent.
-
-Return ONLY SQL.
+Question: {question}
+Previous SQL: {previous_sql}
+SQL:
 """
 
     sql = call_qwen(prompt)

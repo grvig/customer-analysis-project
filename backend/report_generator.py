@@ -1,6 +1,7 @@
 import subprocess
 import re
 import logging
+import os
 from database import execute_query
 from config import REPORT_MODEL
 from ai_utils import get_query_results
@@ -88,7 +89,7 @@ def call_qwen(prompt):
             capture_output=True,
             text=True,
             encoding="utf-8",
-            timeout=180
+            timeout=int(os.getenv("AI_TIMEOUT", 60))
         )
 
         if result.returncode != 0:
@@ -164,56 +165,18 @@ def generate_complaint_report():
     )
 
     prompt = f"""
-You are a senior business analyst.
-
-Top Complaint Categories:
-{top_complaints}
-
-Branch Complaint Volume:
-{complaints_by_branch}
-
-High Priority Complaints:
-{high_priority}
-
-Average Customer Rating:
-{average_rating}
-
-Write ONLY:
+You are a business analyst. Write ONLY the following using the data below. Max 3 bullets each. Under 100 words. Facts only — no invented numbers, causes, or currency symbols.
 
 SUMMARY
-
-- bullet
-- bullet
 - bullet
 
 RECOMMENDATIONS
-
-- bullet
-- bullet
 - bullet
 
-Rules:
-
-- Maximum 3 summary bullets.
-- Maximum 3 recommendation bullets.
-- Do not repeat numerical values.
-- Do not repeat tables.
-- Do not invent numbers.
-- Do not speculate on causes.
-- Keep response under 100 words.
-- Do not repeat numerical values.
-- Do not add currency symbols.
-- Do not mention exact figures already shown in tables.
-
-IMPORTANT:
-
-Only discuss facts directly visible in the provided data.
-
-Do not describe any item as highest, lowest, best, worst, increasing, decreasing, improving, declining, stronger, weaker, or outperforming unless that fact is explicitly visible in the data.
-
-Do not recommend branch closures, staffing changes, marketing campaigns, process improvements, or operational actions unless directly supported by the data.
-
-If the data does not clearly support a recommendation, provide a general monitoring recommendation instead.
+Top Complaint Categories: {top_complaints}
+Branch Complaint Volume: {complaints_by_branch}
+High Priority Complaints: {high_priority}
+Average Customer Rating: {average_rating}
 """
 
     summary = call_qwen(prompt)
@@ -282,52 +245,17 @@ def generate_revenue_report():
     )
 
     prompt = f"""
-You are a senior business analyst.
-
-Revenue By Service:
-{top_services}
-
-Revenue By Branch:
-{branch_revenue}
-
-Average Service Cost:
-{avg_service_cost}
-
-Write ONLY:
+You are a business analyst. Write ONLY the following using the data below. Max 3 bullets each. Under 100 words. Facts only — no invented numbers, causes, or currency symbols.
 
 SUMMARY
-
-- bullet
-- bullet
 - bullet
 
 RECOMMENDATIONS
-
-- bullet
-- bullet
 - bullet
 
-Rules:
-
-- Maximum 3 summary bullets.
-- Maximum 3 recommendation bullets.
-- Do not repeat numerical values.
-- Do not repeat tables.
-- Do not invent numbers.
-- Keep response under 100 words.
-- Do not repeat numerical values.
-- Do not add currency symbols.
-- Do not mention exact figures already shown in tables.
-
-IMPORTANT:
-
-Only discuss facts directly visible in the provided data.
-
-Do not describe any item as highest, lowest, best, worst, increasing, decreasing, improving, declining, stronger, weaker, or outperforming unless that fact is explicitly visible in the data.
-
-Do not recommend branch closures, staffing changes, marketing campaigns, process improvements, or operational actions unless directly supported by the data.
-
-If the data does not clearly support a recommendation, provide a general monitoring recommendation instead.
+Revenue By Service: {top_services}
+Revenue By Branch: {branch_revenue}
+Average Service Cost: {avg_service_cost}
 """
 
     summary = call_qwen(prompt)
@@ -404,56 +332,17 @@ def generate_branch_report():
     )
 
     prompt = f"""
-You are a senior business analyst.
-
-Branch Ratings:
-{branch_ratings}
-
-Branch Revenue:
-{branch_revenue}
-
-Branch Complaints:
-{branch_complaints}
-
-Write ONLY:
+You are a business analyst. Write ONLY the following using the data below. Max 3 bullets each. Under 100 words. Facts only — no invented numbers, causes, or currency symbols.
 
 SUMMARY
-
-- bullet
-- bullet
 - bullet
 
 RECOMMENDATIONS
-
-- bullet
-- bullet
 - bullet
 
-Rules:
-
-- Maximum 3 summary bullets.
-- Maximum 3 recommendation bullets.
-- Do not repeat numerical values.
-- Do not repeat tables.
-- Do not invent numbers.
-- Do not invent metrics.
-- Do not invent percentages.
-- Do not assume currency symbols.
-- Do not speculate on causes.
-- Keep response under 100 words.
-- Do not repeat numerical values.
-- Do not add currency symbols.
-- Do not mention exact figures already shown in tables.
-
-IMPORTANT:
-
-Only discuss facts directly visible in the provided data.
-
-Do not describe any item as highest, lowest, best, worst, increasing, decreasing, improving, declining, stronger, weaker, or outperforming unless that fact is explicitly visible in the data.
-
-Do not recommend branch closures, staffing changes, marketing campaigns, process improvements, or operational actions unless directly supported by the data.
-
-If the data does not clearly support a recommendation, provide a general monitoring recommendation instead.
+Branch Ratings: {branch_ratings}
+Branch Revenue: {branch_revenue}
+Branch Complaints: {branch_complaints}
 """
 
     summary = call_qwen(prompt)
@@ -523,56 +412,17 @@ def generate_customer_satisfaction_report():
     )
 
     prompt = f"""
-You are a senior business analyst.
-
-Average Customer Rating:
-{average_rating}
-
-Will Return Analysis:
-{return_intent}
-
-Recommendation Analysis:
-{recommendation_intent}
-
-Write ONLY:
+You are a business analyst. Write ONLY the following using the data below. Max 3 bullets each. Under 100 words. Facts only — no invented numbers, causes, or currency symbols.
 
 SUMMARY
-
-- bullet
-- bullet
 - bullet
 
 RECOMMENDATIONS
-
-- bullet
-- bullet
 - bullet
 
-Rules:
-
-- Maximum 3 summary bullets.
-- Maximum 3 recommendation bullets.
-- Do not repeat numerical values.
-- Do not repeat tables.
-- Do not invent numbers.
-- Do not invent metrics.
-- Do not invent percentages.
-- Do not assume currency symbols.
-- Do not speculate on causes.
-- Keep response under 100 words.
-- Do not repeat numerical values.
-- Do not add currency symbols.
-- Do not mention exact figures already shown in tables.
-
-IMPORTANT:
-
-Only discuss facts directly visible in the provided data.
-
-Do not describe any item as highest, lowest, best, worst, increasing, decreasing, improving, declining, stronger, weaker, or outperforming unless that fact is explicitly visible in the data.
-
-Do not recommend branch closures, staffing changes, marketing campaigns, process improvements, or operational actions unless directly supported by the data.
-
-If the data does not clearly support a recommendation, provide a general monitoring recommendation instead.
+Average Customer Rating: {average_rating}
+Will Return Analysis: {return_intent}
+Recommendation Analysis: {recommendation_intent}
 """
 
     summary = call_qwen(prompt)
@@ -705,69 +555,17 @@ def generate_custom_report(question):
         return report
 
     prompt = f"""
-You are a senior business analyst.
-
-User Request:
-{question}
-
-Data:
-{table}
-
-Write ONLY:
+You are a business analyst. Write ONLY the following using the data below. Max 3 bullets each. Under 100 words. Describe only visible values, rankings, and patterns — no invented numbers, percentages, correlations, causes, or currency symbols.
 
 SUMMARY
-
-- bullet
-- bullet
 - bullet
 
 OBSERVATIONS
-
-- bullet
-- bullet
 - bullet
 
-Rules:
-Never calculate percentages unless explicitly shown in the data.
-Never estimate proportions.
-Never say "majority", "half", "most", "significant share", or similar quantitative claims unless the value is directly visible.
-Do not perform mathematical calculations.
-Only describe visible rankings and patterns.
-Do not repeat category names from the table.
-Do not repeat rankings from the table.
-Focus on trends, distributions, concentration, comparisons, and patterns.
-Do not infer causes.
-Do not infer technical issues.
-Do not infer customer sentiment.
-- Maximum 3 summary bullets.
-- Maximum 3 recommendation bullets.
-- Do not repeat all data values.
-- Do not invent numbers.
-- Do not invent metrics.
-- Do not invent percentages.
-- Do not assume currency symbols.
-- Do not speculate on causes.
-- Do not infer operational issues.
-- Discuss only facts visible in the data.
-- Keep response under 100 words.
-- Do not repeat numerical values.
-- Do not add currency symbols.
-- Do not mention exact figures already shown in tables.
-- Do not claim correlation unless a correlation value is present.
-- Do not claim trends unless a trend metric is present.
-- Do not claim statistical significance.
-- If the table only contains raw values, describe the values only.
-- Never infer relationships between columns unless explicitly calculated.
-
-IMPORTANT:
-
-Only discuss facts directly visible in the provided data.
-
-Do not describe any item as highest, lowest, best, worst, increasing, decreasing, improving, declining, stronger, weaker, or outperforming unless that fact is explicitly visible in the data.
-
-Do not recommend branch closures, staffing changes, marketing campaigns, process improvements, or operational actions unless directly supported by the data.
-
-If the data does not clearly support a recommendation, provide a general monitoring recommendation instead.
+Request: {question}
+Data:
+{table}
 """
 
     summary = call_qwen(prompt)
