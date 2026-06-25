@@ -1,8 +1,12 @@
 import psycopg2
+import psycopg2.errors
 import os
+import logging
 from dotenv import load_dotenv
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 def get_connection():
     return psycopg2.connect(
@@ -15,17 +19,29 @@ def get_connection():
 
 def execute_query(query):
 
-    conn = get_connection()
-    cur = conn.cursor()
+    conn = None
+    cur = None
 
-    cur.execute(query)
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(query)
+        rows = cur.fetchall()
+        return rows
 
-    rows = cur.fetchall()
+    except psycopg2.OperationalError as e:
+        logger.error(f"Database connection error: {e}")
+        raise
 
-    cur.close()
-    conn.close()
+    except psycopg2.DatabaseError as e:
+        logger.error(f"Database query error: {e}")
+        raise
 
-    return rows
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
 
 def _apply_limit(query, limit=500):
     if "LIMIT" not in query.upper():
@@ -34,27 +50,18 @@ def _apply_limit(query, limit=500):
 
 def execute_custom_query(query):
 
-    try:
+    conn = None
+    cur = None
 
+    try:
         query = _apply_limit(query)
 
         conn = get_connection()
         cur = conn.cursor()
-
         cur.execute(query)
 
-        try:
-            rows = cur.fetchall()
-            columns = [
-                desc[0]
-                for desc in cur.description
-            ]
-        except Exception:
-            rows = []
-            columns = []
-
-        cur.close()
-        conn.close()
+        rows = cur.fetchall()
+        columns = [desc[0] for desc in cur.description] if cur.description else []
 
         return {
             "success": True,
@@ -63,10 +70,32 @@ def execute_custom_query(query):
             "error": None
         }
 
-    except Exception as e:
+    except psycopg2.OperationalError as e:
+        logger.error(f"Database connection error: {e}")
+        return {
+            "success": False,
+            "rows": [],
+            "error": f"Database connection error: {str(e)}"
+        }
 
+    except psycopg2.DatabaseError as e:
+        logger.error(f"Database query error: {e}")
+        return {
+            "success": False,
+            "rows": [],
+            "error": f"Database query error: {str(e)}"
+        }
+
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
         return {
             "success": False,
             "rows": [],
             "error": str(e)
         }
+
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
