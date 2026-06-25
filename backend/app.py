@@ -1,7 +1,10 @@
+from pathlib import Path
+from auth import router as auth_router
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, field_validator
 from database import execute_query, execute_custom_query
+from init_auth import initialize_auth
 from ai_utils import ask_ai
 from report_generator import generate_report, generate_custom_report
 from pdf_generator import create_pdf
@@ -33,9 +36,19 @@ def cleanup_old_pdfs(days=7):
 
 cleanup_old_pdfs()
 
+initialize_auth()
+
 limiter = Limiter(key_func=get_remote_address)
 
 app = FastAPI()
+
+app.include_router(auth_router)
+
+app.state.limiter = limiter
+app.add_exception_handler(
+    RateLimitExceeded,
+    _rate_limit_exceeded_handler
+)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 

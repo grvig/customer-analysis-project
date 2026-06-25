@@ -735,4 +735,190 @@ body.dark-mode .dashboard-tabs button {
 body.dark-mode .dashboard-tabs .active-tab {
   background: var(--tvs-orange);
 }
+/* LOGIN & CREATE USER */
 
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    var(--tvs-blue),
+    var(--tvs-orange)
+  );
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 40px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 430px;
+
+  background: var(--white);
+
+  border-radius: 20px;
+
+  padding: 40px;
+
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+
+  text-align: center;
+}
+
+.login-card h1{
+  color: var(--tvs-orange);
+  font-size:2.3rem;
+  margin-bottom:8px;
+}
+
+.login-card h2{
+  color:var(--text-secondary);
+  font-size:1rem;
+  font-weight:500;
+  margin-bottom:35px;
+}
+
+.login-card input{
+  margin-bottom:18px;
+}
+
+.login-card button{
+  width:100%;
+  margin:0;
+}
+
+.login-error{
+  color:#dc2626;
+  margin-bottom:18px;
+  font-weight:600;
+}
+
+.login-success{
+  color:#16a34a;
+  margin-bottom:18px;
+  font-weight:600;
+}
+
+.auth-link{
+  margin-top:25px;
+}
+
+.auth-link a{
+  color:var(--tvs-blue);
+  text-decoration:none;
+  font-weight:600;
+}
+
+.auth-link a:hover{
+  color:var(--tvs-orange);
+}
+
+body.dark-mode .login-card{
+  background:#1e293b;
+}
+
+body.dark-mode .login-card h2{
+  color:#cbd5e1;
+}
+
+body.dark-mode .login-page{
+  background:linear-gradient(
+      135deg,
+      #0f172a,
+      #23314d
+  );
+}
+/* ---------- USER DROPDOWN ---------- */
+
+.user-menu {
+  position: relative;
+}
+
+.logout-dropdown-btn {
+  all: unset;
+
+  display: block;
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  background: var(--tvs-orange);
+
+  color: white;
+
+  padding: 12px 16px;
+
+  text-align: center;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background .2s ease;
+}
+
+.logout-dropdown-btn:hover {
+  background: var(--tvs-orange-light);
+}
+
+.dropdown-menu {
+  position: absolute;
+
+  top: calc(100% + 10px);
+  right: 0;
+
+  width: 180px;
+
+  background: var(--white);
+
+  border: 1px solid var(--border);
+
+  border-radius: 12px;
+
+  box-shadow: var(--shadow);
+
+  overflow: hidden;
+
+  z-index: 999;
+}
+
+.dropdown-menu button {
+  width: 100%;
+
+  background: transparent;
+  border: none;
+
+  color: var(--text-primary);
+
+  text-align: left;
+
+  padding: 14px 18px;
+
+  margin: 0;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.dropdown-menu button:hover {
+  background: rgba(243, 111, 33, 0.08);
+  color: var(--tvs-orange);
+}
+
+body.dark-mode .dropdown-menu {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+body.dark-mode .dropdown-menu button {
+  color: #f1f5f9;
+}
+
+body.dark-mode .dropdown-menu button:hover {
+  background: rgba(243, 111, 33, 0.15);
+}
