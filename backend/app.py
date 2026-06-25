@@ -15,8 +15,9 @@ import glob
 import logging
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
 
-load_dotenv()
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 logger = logging.getLogger(__name__)
 
