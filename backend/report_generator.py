@@ -11,26 +11,52 @@ from decimal import Decimal
 
 logger = logging.getLogger(__name__)
 
-def clean_text(text):
+def _remove_partial_duplicates(text):
+    cleaned_lines = []
+    for line in text.splitlines():
+        words = line.split()
+        result = []
+        i = 0
+        while i < len(words):
+            if i < len(words) - 1:
+                w1 = words[i]
+                w2 = words[i + 1]
+                w1_clean = re.sub(r'[^a-zA-Z0-9]', '', w1).lower()
+                w2_clean = re.sub(r'[^a-zA-Z0-9]', '', w2).lower()
+                if (
+                    len(w1_clean) >= 2
+                    and w1_clean != w2_clean
+                    and w2_clean.startswith(w1_clean)
+                ):
+                    result.append(w2)
+                    i += 2
+                    continue
+            result.append(words[i])
+            i += 1
+        cleaned_lines.append(' '.join(result))
+    return '\n'.join(cleaned_lines)
 
-    text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
-    text = text.replace('\u001b', '')
-    text = text.strip()
-    
+def _normalize_headings(text):
+    # Fix ##Word → ## Word
+    text = re.sub(r'^(#{1,6})([^#\s])', r'\1 \2', text, flags=re.MULTILINE)
+    # Fix **SUMMARY** used as heading substitute → ## Summary
     text = re.sub(
-        r"\b(\w+)\s+\1\b",
-        r"\1",
+        r'^\*\*(SUMMARY|OBSERVATIONS|RECOMMENDATIONS|FINDINGS)\*\*',
+        lambda m: f"## {m.group(1).title()}",
         text,
-        flags=re.IGNORECASE
+        flags=re.MULTILINE | re.IGNORECASE
     )
-    
-    text = re.sub(
-        r"\b([A-Za-z]{2,})\s+([A-Za-z]{2,})\s+\2\b",
-        r"\1 \2",
-        text
-    )
-
     return text
+
+def clean_text(text):
+    text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
+    text = text.replace('', '')
+    text = text.strip()
+    text = re.sub(r'\b(\w+)\s+\1\b', r'\1', text, flags=re.IGNORECASE)
+    text = _remove_partial_duplicates(text)
+    text = _normalize_headings(text)
+    return text
+
 
 def format_markdown_table(headers, rows):
 
@@ -167,10 +193,10 @@ def generate_complaint_report():
     prompt = f"""
 You are a business analyst. Write ONLY the following using the data below. Max 3 bullets each. Under 100 words. Facts only — no invented numbers, causes, or currency symbols.
 
-SUMMARY
+## SUMMARY
 - bullet
 
-RECOMMENDATIONS
+## RECOMMENDATIONS
 - bullet
 
 Top Complaint Categories: {top_complaints}
@@ -247,10 +273,10 @@ def generate_revenue_report():
     prompt = f"""
 You are a business analyst. Write ONLY the following using the data below. Max 3 bullets each. Under 100 words. Facts only — no invented numbers, causes, or currency symbols.
 
-SUMMARY
+## SUMMARY
 - bullet
 
-RECOMMENDATIONS
+## RECOMMENDATIONS
 - bullet
 
 Revenue By Service: {top_services}
@@ -334,10 +360,10 @@ def generate_branch_report():
     prompt = f"""
 You are a business analyst. Write ONLY the following using the data below. Max 3 bullets each. Under 100 words. Facts only — no invented numbers, causes, or currency symbols.
 
-SUMMARY
+## SUMMARY
 - bullet
 
-RECOMMENDATIONS
+## RECOMMENDATIONS
 - bullet
 
 Branch Ratings: {branch_ratings}
@@ -414,10 +440,10 @@ def generate_customer_satisfaction_report():
     prompt = f"""
 You are a business analyst. Write ONLY the following using the data below. Max 3 bullets each. Under 100 words. Facts only — no invented numbers, causes, or currency symbols.
 
-SUMMARY
+## SUMMARY
 - bullet
 
-RECOMMENDATIONS
+## RECOMMENDATIONS
 - bullet
 
 Average Customer Rating: {average_rating}
@@ -557,10 +583,10 @@ def generate_custom_report(question):
     prompt = f"""
 You are a business analyst. Write ONLY the following using the data below. Max 3 bullets each. Under 100 words. Describe only visible values, rankings, and patterns — no invented numbers, percentages, correlations, causes, or currency symbols.
 
-SUMMARY
+## SUMMARY
 - bullet
 
-OBSERVATIONS
+## OBSERVATIONS
 - bullet
 
 Request: {question}
