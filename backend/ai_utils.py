@@ -4,6 +4,17 @@ import re
 from database import execute_custom_query
 import time
 from datetime import datetime
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("app.log", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 MAX_SQL_RETRIES = 3
 
@@ -173,9 +184,7 @@ def log_sql(
 
     except Exception as e:
 
-        print(
-            f"Logging error: {e}"
-        )
+        logger.error(f"Logging error: {e}")
         
 def validate_sql(sql):
 
@@ -406,9 +415,7 @@ SQL:
 
     response = call_qwen(prompt)
 
-    print("\nRAW MODEL RESPONSE:")
-    print(response)
-    print()
+    logger.debug(f"Raw model response: {response}")
 
     sql = response
 
@@ -422,9 +429,7 @@ SQL:
     
     sql = clean_generated_sql(sql)
     
-    print("\nGENERATED SQL:")
-    print(sql)
-    print()
+    logger.debug(f"Generated SQL: {sql}")
 
     return sql
 
@@ -523,9 +528,7 @@ Return ONLY SQL.
     
     sql = clean_generated_sql(sql)
 
-    print("\nREGENERATED SQL:")
-    print(sql)
-    print()
+    logger.debug(f"Regenerated SQL: {sql}")
 
     return sql
 
@@ -581,9 +584,7 @@ def get_query_results(question):
     sql = generate_sql(
         question
     )
-    print("\n========== GENERATED SQL ==========")
-    print(sql)
-    print("===================================\n")
+    logger.debug(f"Generated SQL (get_query_results): {sql}")
 
     query_result = execute_custom_query(
         sql
@@ -594,15 +595,14 @@ def get_query_results(question):
         and len(query_result["rows"]) == 0
     ):
 
-        print("\nEMPTY RESULT DETECTED")
+        logger.warning("Empty result detected, retrying with less restrictive query")
 
         sql = regenerate_empty_result_sql(
             question,
             sql
         )
 
-        print("\nEMPTY RESULT RETRY SQL:")
-        print(sql)
+        logger.debug(f"Empty result retry SQL: {sql}")
 
         query_result = execute_custom_query(
             sql
@@ -613,10 +613,7 @@ def get_query_results(question):
         if query_result["success"]:
             break
 
-        print(
-            f"SQL Retry {attempt + 1}: "
-            f"{query_result['error']}"
-        )
+        logger.warning(f"SQL retry {attempt + 1}: {query_result['error']}")
 
         sql = regenerate_sql(
             question,
@@ -637,9 +634,7 @@ def get_query_results(question):
             "error": query_result["error"]
         }
     
-    print("\nFINAL SQL SUCCESS:")
-    print(sql)
-    print()
+    logger.debug(f"Final SQL success: {sql}")
 
     return {
         "success": True,
@@ -667,10 +662,7 @@ def ask_ai(question):
 
         if not validation["valid"]:
 
-            print(
-                "SQL Validation Failed:",
-                validation["errors"]
-            )
+            logger.warning(f"SQL validation failed: {validation['errors']}")
 
             sql = regenerate_sql(
                 question,
@@ -694,9 +686,7 @@ def ask_ai(question):
                 query_result["error"]
             )
             query_result = execute_custom_query(sql)
-            print("\n========== QUERY RESULT ==========")
-            print(query_result)
-            print("==================================\n")
+            logger.debug(f"Query result after retry: {query_result}")
 
         if not query_result["success"]:
             execution_time = round(

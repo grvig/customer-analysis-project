@@ -1,11 +1,14 @@
 import subprocess
 import re
+import logging
 from database import execute_query
 from config import REPORT_MODEL
 from ai_utils import get_query_results
 from database import execute_custom_query
 from textwrap import dedent
 from decimal import Decimal
+
+logger = logging.getLogger(__name__)
 
 def clean_text(text):
 
@@ -66,9 +69,7 @@ def format_markdown_table(headers, rows):
             + " |\n"
         )
 
-    print("\nTABLE DEBUG:")
-    print(table)
-    print()
+    logger.debug(f"Built markdown table: {table}")
 
     return table
 
@@ -699,9 +700,7 @@ def generate_custom_report(question):
 
 {table}
 """
-        print("\nREPORT DEBUG:")
-        print(repr(report))
-        print()
+        logger.debug(f"Custom report (no AI): {repr(report)}")
 
         return report
 
@@ -772,9 +771,7 @@ If the data does not clearly support a recommendation, provide a general monitor
 """
 
     summary = call_qwen(prompt)
-    print("\nRAW SUMMARY:")
-    print(summary)
-    print()
+    logger.debug(f"Raw AI summary: {summary}")
     report = f"""
 # CUSTOM REPORT
 
@@ -788,9 +785,7 @@ If the data does not clearly support a recommendation, provide a general monitor
 
 {summary}
 """
-    print("\nREPORT DEBUG:")
-    print(repr(report))
-    print()
+    logger.debug(f"Custom report (with AI): {repr(report)}")
     return report
 def generate_report(report_type):
 
