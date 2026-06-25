@@ -5,13 +5,29 @@ from database import execute_query, execute_custom_query
 from ai_utils import ask_ai
 from report_generator import generate_report
 from pdf_generator import create_pdf
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import os
+import glob
+import logging
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
+
+def cleanup_old_pdfs(days=7):
+    reports_dir = "reports"
+    if not os.path.exists(reports_dir):
+        return
+    cutoff = datetime.now() - timedelta(days=days)
+    for filepath in glob.glob(os.path.join(reports_dir, "*.pdf")):
+        if datetime.fromtimestamp(os.path.getmtime(filepath)) < cutoff:
+            os.remove(filepath)
+            logger.info(f"Deleted old PDF: {filepath}")
+
+cleanup_old_pdfs()
 
 
 from report_generator import (

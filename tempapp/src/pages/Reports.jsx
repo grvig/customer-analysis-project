@@ -105,8 +105,9 @@ export default function Reports() {
       </button>
 
       <button
-        onClick={handleDownloadPdf}
-        disabled={loading}
+        disabled={true}
+        title="PDF downloads are currently unavailable"
+        style={{ opacity: 0.4, cursor: "not-allowed" }}
       >
         Download PDF
       </button>
