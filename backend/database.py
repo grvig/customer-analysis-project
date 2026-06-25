@@ -27,9 +27,16 @@ def execute_query(query):
 
     return rows
 
+def _apply_limit(query, limit=500):
+    if "LIMIT" not in query.upper():
+        query = query.rstrip().rstrip(";") + f" LIMIT {limit};"
+    return query
+
 def execute_custom_query(query):
 
     try:
+
+        query = _apply_limit(query)
 
         conn = get_connection()
         cur = conn.cursor()
