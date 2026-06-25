@@ -458,17 +458,17 @@ If the data does not clearly support a recommendation, provide a general monitor
     summary = call_qwen(prompt)
 
     report = f"""
-#BRANCH PERFORMANCE REPORT
+# BRANCH PERFORMANCE REPORT
 
-##BRANCH RATINGS
+## BRANCH RATINGS
 
 {ratings_table}
 
-##BRANCH REVENUE
+## BRANCH REVENUE
 
 {revenue_table}
 
-##BRANCH COMPLAINTS
+## BRANCH COMPLAINTS
 
 {complaints_table}
 
@@ -577,17 +577,17 @@ If the data does not clearly support a recommendation, provide a general monitor
     summary = call_qwen(prompt)
 
     report = f"""
-#CUSTOMER SATISFACTION REPORT
+# CUSTOMER SATISFACTION REPORT
 
-##AVERAGE CUSTOMER RATING
+## AVERAGE CUSTOMER RATING
 
 {average_rating[0][0]}
 
-##RETURN INTENT
+## RETURN INTENT
 
 {return_table}
 
-##RECOMMENDATION INTENT
+## RECOMMENDATION INTENT
 
 {recommendation_table}
 

@@ -757,9 +757,9 @@ def ask_ai(question):
 
     except Exception as e:
         execution_time = round(
-        time.time() - start_time,
-        2
-    )
+            time.time() - start_time,
+            2
+        )
         return {
             "success": False,
             "sql": None,

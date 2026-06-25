@@ -1,13 +1,17 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from database import execute_query, execute_custom_query
 from ai_utils import ask_ai
 from report_generator import generate_report
 from pdf_generator import create_pdf
 from datetime import datetime
 import time
+import os
+from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+
+load_dotenv()
 
 
 from report_generator import (
@@ -19,7 +23,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173"
+        os.getenv("CORS_ORIGIN", "http://localhost:5173")
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -28,6 +32,13 @@ app.add_middleware(
 
 class QueryRequest(BaseModel):
     sql: str
+
+    @field_validator("sql")
+    @classmethod
+    def must_be_select(cls, v):
+        if not v.strip().upper().startswith("SELECT"):
+            raise ValueError("Only SELECT queries are allowed")
+        return v
 
 class AskRequest(BaseModel):
     question: str
