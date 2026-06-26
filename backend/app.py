@@ -1,4 +1,3 @@
-from pathlib import Path
 from auth import router as auth_router
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse
@@ -44,11 +43,6 @@ app = FastAPI()
 
 app.include_router(auth_router)
 
-app.state.limiter = limiter
-app.add_exception_handler(
-    RateLimitExceeded,
-    _rate_limit_exceeded_handler
-)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
