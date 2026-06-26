@@ -1093,3 +1093,48 @@ body.dark-mode .dropdown-item {
 body.dark-mode .dropdown-item:hover {
   background: rgba(79, 107, 198, 0.15);
 }
+
+/* ---------- AI EXPORT BUTTONS ---------- */
+
+.data-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.data-section-header h3 {
+  margin: 0;
+}
+
+.export-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.export-btn {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid var(--tvs-blue);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--tvs-blue);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.export-btn:hover {
+  background: var(--tvs-blue);
+  color: #fff;
+}
+
+body.dark-mode .export-btn {
+  border-color: #4f6bc6;
+  color: #a5b4fc;
+}
+
+body.dark-mode .export-btn:hover {
+  background: #4f6bc6;
+  color: #fff;
+}

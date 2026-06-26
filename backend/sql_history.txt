@@ -187,3 +187,57 @@ True
 
 Error:
 None
+
+============================================================
+Timestamp: 2026-06-26 11:00:42.349227
+
+Question:
+test
+
+Generated SQL:
+SELECT COUNT(*) AS customer_count FROM customers;
+
+Final SQL:
+SELECT COUNT(*) AS customer_count FROM customers;
+
+Validation Passed:
+True
+
+Validation Errors:
+[]
+
+Retries:
+0
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-26 11:00:44.010863
+
+Question:
+how many customers are there
+
+Generated SQL:
+SELECT COUNT(*) AS customer_count FROM customers;
+
+Final SQL:
+SELECT COUNT(*) AS customer_count FROM customers;
+
+Validation Passed:
+True
+
+Validation Errors:
+[]
+
+Retries:
+0
+
+Success:
+True
+
+Error:
+None
