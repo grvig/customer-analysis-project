@@ -1,6 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from passlib.context import CryptContext
+from jose import jwt
+from datetime import datetime, timedelta, timezone
+import os
 
 from database import get_connection
 
@@ -10,6 +13,15 @@ pwd_context = CryptContext(
     schemes=["bcrypt"],
     deprecated="auto"
 )
+
+TOKEN_EXPIRY_HOURS = 8
+
+def create_access_token(username: str) -> str:
+    payload = {
+        "sub": username,
+        "exp": datetime.now(timezone.utc) + timedelta(hours=TOKEN_EXPIRY_HOURS)
+    }
+    return jwt.encode(payload, os.getenv("JWT_SECRET"), algorithm="HS256")
 
 
 class LoginRequest(BaseModel):
@@ -107,9 +119,11 @@ def login(body: LoginRequest):
                 detail="Invalid username or password"
             )
 
+        token = create_access_token(body.username)
+
         return {
             "success": True,
-            "message": "Login successful",
+            "access_token": token,
             "username": body.username
         }
 

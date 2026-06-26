@@ -1,5 +1,7 @@
 from auth import router as auth_router
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from jose import jwt, JWTError
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, field_validator
 from database import execute_query, execute_custom_query
@@ -22,6 +24,14 @@ from pathlib import Path
 load_dotenv(Path(__file__).parent.parent / ".env")
 
 logger = logging.getLogger(__name__)
+
+_bearer = HTTPBearer()
+
+def verify_token(credentials: HTTPAuthorizationCredentials = Depends(_bearer)):
+    try:
+        jwt.decode(credentials.credentials, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
 def cleanup_old_pdfs(days=7):
     reports_dir = "reports"
@@ -90,13 +100,13 @@ def health():
 
 @app.post("/ask")
 @limiter.limit("10/minute")
-def ask_question(request: Request, body: AskRequest):
+def ask_question(request: Request, body: AskRequest, _=Depends(verify_token)):
     return ask_ai(body.question)
 
 
 @app.post("/report")
 @limiter.limit("5/minute")
-def create_report(request: Request, body: ReportRequest):
+def create_report(request: Request, body: ReportRequest, _=Depends(verify_token)):
     start_time = time.time()
     report_type = REPORT_ALIASES.get(
         body.report_type.lower().strip(),
@@ -123,7 +133,7 @@ def create_report(request: Request, body: ReportRequest):
 
 @app.post("/report/custom")
 @limiter.limit("5/minute")
-def custom_report(request: Request, body: CustomReportRequest):
+def custom_report(request: Request, body: CustomReportRequest, _=Depends(verify_token)):
     start_time = time.time()
 
     report = generate_custom_report(body.question)
@@ -139,7 +149,7 @@ def custom_report(request: Request, body: CustomReportRequest):
 
 @app.post("/report/pdf")
 @limiter.limit("5/minute")
-def create_report_pdf(request: Request, body: ReportRequest):
+def create_report_pdf(request: Request, body: ReportRequest, _=Depends(verify_token)):
     start_time = time.time()
     report_type = REPORT_ALIASES.get(
         body.report_type.lower().strip(),
@@ -171,7 +181,7 @@ def create_report_pdf(request: Request, body: ReportRequest):
 
 
 @app.get("/download-report/{filename}")
-def download_report(filename: str):
+def download_report(filename: str, _=Depends(verify_token)):
     file_path = f"reports/{filename}"
     return FileResponse(
         path=file_path,
@@ -182,7 +192,7 @@ def download_report(filename: str):
 
 @app.get("/dashboard")
 @limiter.limit("30/minute")
-def dashboard(request: Request):
+def dashboard(request: Request, _=Depends(verify_token)):
     summary = {
         "customers": execute_query("SELECT COUNT(*) FROM customers;")[0][0],
         "calls": execute_query("SELECT COUNT(*) FROM calls;")[0][0],
