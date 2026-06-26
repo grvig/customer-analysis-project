@@ -1,10 +1,6 @@
-import axios from "axios";
-import { API_BASE_URL } from "./api";
+import api from "./api";
 
 export const getDashboardData = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/dashboard`
-  );
-
+  const response = await api.get("/dashboard");
   return response.data;
 };

@@ -20,10 +20,8 @@ export default function Login() {
     try {
       const data = await login(username, password);
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(data)
-      );
+      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("user", JSON.stringify({ username: data.username }));
 
       navigate("/");
     } catch (err) {

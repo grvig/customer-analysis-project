@@ -1,13 +1,6 @@
-import axios from "axios";
-import { API_BASE_URL } from "./api";
+import api from "./api";
 
 export const askQuestion = async (question) => {
-  const response = await axios.post(
-    `${API_BASE_URL}/ask`,
-    {
-      question,
-    }
-  );
-
+  const response = await api.post("/ask", { question });
   return response.data;
 };

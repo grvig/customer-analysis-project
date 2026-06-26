@@ -38,7 +38,11 @@ DB_PORT=5432
 CORS_ORIGIN=http://localhost:5173
 
 AI_TIMEOUT=60
+
+JWT_SECRET=any_long_random_string_here
 ```
+
+`JWT_SECRET` can be any long random string — run `python -c "import secrets; print(secrets.token_hex(32))"` to generate one.
 
 Copy `tempapp/.env.example` to `tempapp/.env`:
 
@@ -52,6 +56,7 @@ VITE_API_BASE_URL=http://localhost:8000
 cd backend
 python -m venv venv
 venv\Scripts\activate        # Windows
+source venv/bin/activate     # Mac/Linux
 pip install -r requirements.txt
 uvicorn app:app --reload
 ```
@@ -81,16 +86,18 @@ pytest tests/ -v
 
 ## API Endpoints
 
-| Method | Endpoint | Description | Rate limit |
-|---|---|---|---|
-| GET | `/` | Health check | — |
-| GET | `/health` | Health check with status | — |
-| GET | `/dashboard` | Dashboard summary data | 30/min |
-| POST | `/ask` | Natural language AI query | 10/min |
-| POST | `/report` | Generate preset report | 5/min |
-| POST | `/report/custom` | Generate custom AI report | 5/min |
-| POST | `/report/pdf` | Generate PDF report | 5/min |
-| GET | `/download-report/{filename}` | Download generated PDF | — |
+| Method | Endpoint | Description | Auth required | Rate limit |
+|---|---|---|---|---|
+| GET | `/` | Health check | No | — |
+| GET | `/health` | Health check with status | No | — |
+| POST | `/login` | Login and receive JWT token | No | — |
+| POST | `/register` | Create a new user account | No | — |
+| GET | `/dashboard` | Dashboard summary data | Yes | 30/min |
+| POST | `/ask` | Natural language AI query | Yes | 10/min |
+| POST | `/report` | Generate preset report | Yes | 5/min |
+| POST | `/report/custom` | Generate custom AI report | Yes | 5/min |
+| POST | `/report/pdf` | Generate PDF report | Yes | 5/min |
+| GET | `/download-report/{filename}` | Download generated PDF | Yes | — |
 
 ### Preset report types
 
@@ -104,6 +111,8 @@ pytest tests/ -v
 customer-analysis-project/
 ├── backend/
 │   ├── app.py               # FastAPI routes
+│   ├── auth.py              # Login, register, JWT token issuance
+│   ├── init_auth.py         # Creates users table on startup
 │   ├── database.py          # DB connection and query execution
 │   ├── ai_utils.py          # AI query generation and execution
 │   ├── report_generator.py  # Preset and custom report generation
