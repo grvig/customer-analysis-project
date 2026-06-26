@@ -44,6 +44,8 @@ JWT_SECRET=any_long_random_string_here
 
 `JWT_SECRET` can be any long random string — run `python -c "import secrets; print(secrets.token_hex(32))"` to generate one.
 
+> **Mac users:** if you get a Postgres authentication error, change `DB_HOST=localhost` to `DB_HOST=127.0.0.1`. Mac resolves `localhost` over IPv6 (`::1`) which can cause connection failures.
+
 Copy `tempapp/.env.example` to `tempapp/.env`:
 
 ```
@@ -106,6 +108,17 @@ pytest tests/ -v
 
 ---
 
+## Mac vs Windows Notes
+
+| Issue | Windows | Mac |
+|---|---|---|
+| Activate venv | `venv\Scripts\activate` | `source venv/bin/activate` |
+| Python command | `python` | `python3` |
+| Postgres host | `DB_HOST=localhost` | `DB_HOST=127.0.0.1` (if localhost fails) |
+| File casing | Case-insensitive — imports like `./pages/login` work even if file is `Login.jsx` | Case-sensitive — import casing must exactly match the filename |
+
+---
+
 ## Project Structure
 
 ```
@@ -131,6 +144,5 @@ customer-analysis-project/
         ├── pages/           # Dashboard, AIAssistant, Reports, Login, CreateUser
         ├── components/      # Layout, Sidebar, Header, ProtectedRoute, charts
         ├── services/        # API client, auth, dashboard, report, AI service functions
-        ├── mock/            # Local mock data (dev/testing only)
         └── styles/          # Global CSS
 ```
