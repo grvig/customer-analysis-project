@@ -1,7 +1,5 @@
-from auth import router as auth_router
+from auth import router as auth_router, verify_token
 from fastapi import FastAPI, HTTPException, Request, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import jwt, JWTError
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, field_validator
 from database import execute_query, execute_custom_query
@@ -24,14 +22,6 @@ from pathlib import Path
 load_dotenv(Path(__file__).parent.parent / ".env")
 
 logger = logging.getLogger(__name__)
-
-_bearer = HTTPBearer()
-
-def verify_token(credentials: HTTPAuthorizationCredentials = Depends(_bearer)):
-    try:
-        jwt.decode(credentials.credentials, os.getenv("JWT_SECRET"), algorithms=["HS256"])
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
 def cleanup_old_pdfs(days=7):
     reports_dir = "reports"
