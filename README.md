@@ -78,7 +78,8 @@ npm run electron   # desktop app
 
 ```bash
 cd backend
-venv\Scripts\activate
+venv\Scripts\activate      # Windows
+source venv/bin/activate   # Mac/Linux
 pytest tests/ -v
 ```
 
@@ -119,6 +120,7 @@ customer-analysis-project/
 │   ├── pdf_generator.py     # PDF creation
 │   ├── config.py            # Model config
 │   ├── schema_context.txt   # Database schema provided to AI
+│   ├── ai_test_cases.txt    # Manual AI query test cases
 │   ├── sql_history.txt      # AI query audit log (auto-generated)
 │   ├── app.log              # Application log (auto-generated)
 │   └── tests/
@@ -126,7 +128,9 @@ customer-analysis-project/
 │       └── test_utils.py    # Utility function tests
 └── tempapp/
     └── src/
-        ├── pages/           # Dashboard, AIAssistant, Reports
-        ├── components/      # Layout, charts
-        └── services/        # API service functions
+        ├── pages/           # Dashboard, AIAssistant, Reports, Login, CreateUser
+        ├── components/      # Layout, Sidebar, Header, ProtectedRoute, charts
+        ├── services/        # API client, auth, dashboard, report, AI service functions
+        ├── mock/            # Local mock data (dev/testing only)
+        └── styles/          # Global CSS
 ```
