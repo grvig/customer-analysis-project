@@ -52,3 +52,138 @@ True
 
 Error:
 None
+
+============================================================
+Timestamp: 2026-06-26 10:52:41.160126
+
+Question:
+how many customers are from tallakulam
+
+Generated SQL:
+SELECT COUNT(*) AS customer_count FROM customers WHERE city = 'Tallakulam';
+
+Final SQL:
+SELECT COUNT(*) AS customer_count FROM customers WHERE city = 'Tallakulam';
+
+Validation Passed:
+True
+
+Validation Errors:
+[]
+
+Retries:
+0
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-26 10:52:56.334360
+
+Question:
+how many customers are from tallakulam
+
+Generated SQL:
+SELECT COUNT(*) AS customer_count FROM customers WHERE city = 'Tallakulam';
+
+Final SQL:
+SELECT COUNT(*) AS customer_count FROM customers WHERE city = 'Tallakulam';
+
+Validation Passed:
+True
+
+Validation Errors:
+[]
+
+Retries:
+0
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-26 10:53:19.374756
+
+Question:
+how many customers are from anna nagar
+
+Generated SQL:
+SELECT COUNT(*) AS customer_count FROM customers WHERE city = 'Anna Nagar';
+
+Final SQL:
+SELECT COUNT(*) AS customer_count FROM customers WHERE city = 'Anna Nagar';
+
+Validation Passed:
+True
+
+Validation Errors:
+[]
+
+Retries:
+0
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-26 10:53:33.635605
+
+Question:
+how many customers are from anna nagar madurai branch
+
+Generated SQL:
+SELECT COUNT(*) AS customer_count FROM customers WHERE branch = 'Anna Nagar Madurai';
+
+Final SQL:
+SELECT COUNT(*) AS customer_count FROM customers WHERE branch = 'Anna Nagar Madurai';
+
+Validation Passed:
+True
+
+Validation Errors:
+[]
+
+Retries:
+0
+
+Success:
+True
+
+Error:
+None
+
+============================================================
+Timestamp: 2026-06-26 10:53:50.278523
+
+Question:
+how many customers are from the madurai annanagar branch
+
+Generated SQL:
+SELECT COUNT(*) AS customer_count FROM customers WHERE branch = 'Anna Nagar Madurai';
+
+Final SQL:
+SELECT COUNT(*) AS customer_count FROM customers WHERE branch = 'Anna Nagar Madurai';
+
+Validation Passed:
+True
+
+Validation Errors:
+[]
+
+Retries:
+0
+
+Success:
+True
+
+Error:
+None

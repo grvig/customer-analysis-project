@@ -6,7 +6,10 @@ export default function AIAssistant() {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("queryHistory") || "[]"); }
+    catch { return []; }
+  });
 
   const handleAsk = async () => {
     if (!question.trim()) return;
@@ -25,10 +28,11 @@ export default function AIAssistant() {
 
       setResponse(data);
 
-      setHistory((prev) => [
-        question,
-        ...prev.filter((q) => q !== question).slice(0, 4),
-      ]);
+      setHistory((prev) => {
+        const updated = [question, ...prev.filter((q) => q !== question).slice(0, 4)];
+        localStorage.setItem("queryHistory", JSON.stringify(updated));
+        return updated;
+      });
     } catch (err) {
       setError("Could not reach the server. Make sure the backend is running.");
     } finally {
