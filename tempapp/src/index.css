@@ -328,10 +328,13 @@ textarea {
   border-collapse: collapse;
   font-size: 0.9rem;
   margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .results-table th {
-  background: var(--primary);
+  background: var(--tvs-blue);
   color: #fff;
   padding: 10px 14px;
   text-align: left;
@@ -342,7 +345,7 @@ textarea {
 .results-table td {
   padding: 9px 14px;
   border-bottom: 1px solid var(--border);
-  color: var(--text);
+  color: var(--text-primary);
 }
 
 .results-table tr:last-child td {
@@ -350,7 +353,16 @@ textarea {
 }
 
 .results-table tr:nth-child(even) td {
-  background: var(--bg-secondary);
+  background: var(--background);
+}
+
+body.dark-mode .results-table td {
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+body.dark-mode .results-table tr:nth-child(even) td {
+  background: #1e293b;
 }
 
 .error-box {
