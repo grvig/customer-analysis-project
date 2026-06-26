@@ -241,3 +241,60 @@ True
 
 Error:
 None
+
+============================================================
+Timestamp: 2026-06-26 11:07:48.266332
+
+Question:
+how many happy customers complaining about engine related issues from madurai anna nagar branch
+
+Generated SQL:
+SELECT COUNT(*) AS happy_complaint_count FROM calls c JOIN surveys s ON c.service_id = s.service_id JOIN vehicles v ON c.vehicle_id = v.vehicle_id WHERE c.branch IN ('Anna Nagar Madurai', 'Anna Nagar') AND s.customer_rating > 3 AND c.call_type = 'Complaint' AND LOWER(c.issue_category) LIKE '%engine%';
+
+Final SQL:
+SELECT COUNT(*) AS happy_complaint_count FROM calls c JOIN services s ON c.call_id = s.service_id JOIN vehicles v ON c.vehicle_id = v.vehicle_id WHERE c.branch IN ('Anna Nagar Madurai', 'Anna Nagar') AND c.customer_rating > 3 AND c.call_type = 'Complaint' AND LOWER(c.issue_category) LIKE '%engine%';
+
+Validation Passed:
+True
+
+Validation Errors:
+[]
+
+Retries:
+3
+
+Success:
+False
+
+Error:
+Database query error: column c.customer_rating does not exist
+LINE 1: ...ranch IN ('Anna Nagar Madurai', 'Anna Nagar') AND c.customer...
+                                                             ^
+
+
+============================================================
+Timestamp: 2026-06-26 11:08:09.148729
+
+Question:
+how many happy customers complaining about engine related issues
+
+Generated SQL:
+SELECT COUNT(*) AS happy_complaints FROM calls c JOIN vehicles v ON c.vehicle_id = v.vehicle_id JOIN surveys s ON s.service_id = ( SELECT service_id FROM services WHERE call_id = c.call_id ) WHERE c.call_type = 'Complaint' AND issue_category LIKE '%Engine%' AND s.customer_rating >= 4;
+
+Final SQL:
+SELECT COUNT(*) AS happy_complaints FROM calls c JOIN vehicles v ON c.vehicle_id = v.vehicle_id JOIN surveys s ON s.service_id = ( SELECT service_id FROM services WHERE call_id = c.call_id ) WHERE c.call_type = 'Complaint' AND issue_category LIKE '%Engine%' AND s.customer_rating >= 4;
+
+Validation Passed:
+True
+
+Validation Errors:
+[]
+
+Retries:
+0
+
+Success:
+True
+
+Error:
+None
