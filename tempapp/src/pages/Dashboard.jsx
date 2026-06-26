@@ -10,6 +10,7 @@ import { getDashboardData } from "../services/dashboardService";
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("complaints");
 
   useEffect(() => {
@@ -17,13 +18,12 @@ export default function Dashboard() {
       try {
         const data = await getDashboardData();
 
-        console.log("Dashboard Data:", data);
-
         if (data) {
           setDashboardData(data);
         }
       } catch (error) {
-        console.error("Dashboard Error:", error);
+        setDashboardData(null);
+        setError("Failed to load dashboard. Make sure the backend is running.");
       } finally {
         setLoading(false);
       }
@@ -41,14 +41,12 @@ export default function Dashboard() {
     );
   }
 
-  if (!dashboardData || !dashboardData.summary) {
+  if (error || !dashboardData || !dashboardData.summary) {
     return (
       <div style={{ padding: "30px" }}>
-        <h2>Failed to load dashboard data.</h2>
-        <p>
-          Check whether the backend is running and
-          returning dashboard data.
-        </p>
+        <div className="error-box">
+          <p>{error || "Failed to load dashboard data."}</p>
+        </div>
       </div>
     );
   }
