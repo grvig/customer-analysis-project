@@ -633,6 +633,7 @@ def ask_ai(question):
             }
 
         rows = query_result["rows"]
+        columns = query_result.get("columns", [])
 
         answer = explain_results(
             question,
@@ -642,7 +643,7 @@ def ask_ai(question):
             time.time() - start_time,
             2
         )
-        
+
         log_sql(
             question,
             generated_sql,
@@ -657,6 +658,7 @@ def ask_ai(question):
         return {
             "success": True,
             "sql": sql,
+            "columns": columns,
             "rows": rows,
             "answer": answer,
             "execution_time": execution_time,

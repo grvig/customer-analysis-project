@@ -95,30 +95,37 @@ export default function AIAssistant() {
       {response && (
         <div className="result-box">
           <div className="response-section">
-            <h3>User Question</h3>
-            <p>{question}</p>
-          </div>
-
-          <div className="response-section">
-            <h3>Generated SQL</h3>
-            <pre>{response.sql}</pre>
-          </div>
-
-          <div className="response-section">
-            <h3>Query Results</h3>
-            <pre>
-              {JSON.stringify(
-                response.rows,
-                null,
-                2
-              )}
-            </pre>
-          </div>
-
-          <div className="response-section">
             <h3>AI Answer</h3>
             <p>{response.answer}</p>
           </div>
+
+          {response.rows && response.rows.length > 0 && (
+            <div className="response-section">
+              <h3>Data</h3>
+              <div style={{ overflowX: "auto" }}>
+                <table className="results-table">
+                  {response.columns && response.columns.length > 0 && (
+                    <thead>
+                      <tr>
+                        {response.columns.map((col, i) => (
+                          <th key={i}>{col}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                  )}
+                  <tbody>
+                    {response.rows.map((row, i) => (
+                      <tr key={i}>
+                        {(Array.isArray(row) ? row : [row]).map((cell, j) => (
+                          <td key={j}>{cell !== null && cell !== undefined ? String(cell) : "—"}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
