@@ -1,18 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from passlib.context import CryptContext
 from jose import jwt
 from datetime import datetime, timedelta, timezone
+import bcrypt
 import os
 
 from database import get_connection
 
 router = APIRouter()
-
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto"
-)
 
 TOKEN_EXPIRY_HOURS = 8
 
@@ -57,7 +52,7 @@ def register(body: RegisterRequest):
                 detail="Username already exists"
             )
 
-        password_hash = pwd_context.hash(body.password)
+        password_hash = bcrypt.hashpw(body.password.encode(), bcrypt.gensalt()).decode()
 
         cur.execute(
             """
@@ -110,10 +105,7 @@ def login(body: LoginRequest):
 
         password_hash = user[0]
 
-        if not pwd_context.verify(
-            body.password,
-            password_hash
-        ):
+        if not bcrypt.checkpw(body.password.encode(), password_hash.encode()):
             raise HTTPException(
                 status_code=401,
                 detail="Invalid username or password"
