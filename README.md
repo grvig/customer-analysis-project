@@ -39,12 +39,16 @@ CORS_ORIGIN=http://localhost:5173
 
 AI_TIMEOUT=60
 
-JWT_SECRET=any_long_random_string_here
+JWT_SECRET=your_jwt_secret_here
 ```
 
-`JWT_SECRET` can be any long random string — run `python -c "import secrets; print(secrets.token_hex(32))"` to generate one.
+`JWT_SECRET` can be any long random string. Generate one with:
 
-> **Mac users:** if you get a Postgres authentication error, change `DB_HOST=localhost` to `DB_HOST=127.0.0.1`. Mac resolves `localhost` over IPv6 (`::1`) which can cause connection failures.
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+> **Mac users:** use `python3` instead of `python`. If you get a Postgres authentication error, set `DB_HOST=127.0.0.1` instead of `localhost` — Mac resolves `localhost` over IPv6 which can cause connection failures.
 
 Copy `tempapp/.env.example` to `tempapp/.env`:
 
@@ -80,8 +84,8 @@ npm run electron   # desktop app
 
 ```bash
 cd backend
-venv\Scripts\activate      # Windows
-source venv/bin/activate   # Mac/Linux
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # Mac/Linux
 pytest tests/ -v
 ```
 
@@ -95,6 +99,7 @@ pytest tests/ -v
 | GET | `/health` | Health check with status | No | — |
 | POST | `/login` | Login and receive JWT token | No | — |
 | POST | `/register` | Create a new user account | No | — |
+| POST | `/change-password` | Change authenticated user's password | Yes | — |
 | GET | `/dashboard` | Dashboard summary data | Yes | 30/min |
 | POST | `/ask` | Natural language AI query | Yes | 10/min |
 | POST | `/report` | Generate preset report | Yes | 5/min |
@@ -108,41 +113,31 @@ pytest tests/ -v
 
 ---
 
-## Mac vs Windows Notes
-
-| Issue | Windows | Mac |
-|---|---|---|
-| Activate venv | `venv\Scripts\activate` | `source venv/bin/activate` |
-| Python command | `python` | `python3` |
-| Postgres host | `DB_HOST=localhost` | `DB_HOST=127.0.0.1` (if localhost fails) |
-| File casing | Case-insensitive — imports like `./pages/login` work even if file is `Login.jsx` | Case-sensitive — import casing must exactly match the filename |
-
----
-
 ## Project Structure
 
 ```
 customer-analysis-project/
+├── dataset/                     # Raw CSV source data
 ├── backend/
-│   ├── app.py               # FastAPI routes
-│   ├── auth.py              # Login, register, JWT token issuance
-│   ├── init_auth.py         # Creates users table on startup
-│   ├── database.py          # DB connection and query execution
-│   ├── ai_utils.py          # AI query generation and execution
-│   ├── report_generator.py  # Preset and custom report generation
-│   ├── pdf_generator.py     # PDF creation
-│   ├── config.py            # Model config
-│   ├── schema_context.txt   # Database schema provided to AI
-│   ├── ai_test_cases.txt    # Manual AI query test cases
-│   ├── sql_history.txt      # AI query audit log (auto-generated)
-│   ├── app.log              # Application log (auto-generated)
+│   ├── app.py                   # FastAPI routes and middleware
+│   ├── auth.py                  # Login, register, JWT issuance, change password
+│   ├── init_auth.py             # Creates users table on startup
+│   ├── database.py              # DB connection and query execution
+│   ├── ai_utils.py              # AI query generation, validation, and execution
+│   ├── report_generator.py      # Preset and custom report generation
+│   ├── pdf_generator.py         # PDF creation
+│   ├── config.py                # AI model config
+│   ├── schema_context.txt       # Database schema provided to AI
+│   ├── ai_test_cases.txt        # Manual AI query test cases
+│   ├── app.log                  # Application log (auto-generated)
 │   └── tests/
-│       ├── test_app.py      # API endpoint tests
-│       └── test_utils.py    # Utility function tests
+│       ├── test_app.py          # API endpoint tests
+│       ├── test_utils.py        # Utility function tests
+│       └── test_pdf.py          # PDF generation tests
 └── tempapp/
     └── src/
-        ├── pages/           # Dashboard, AIAssistant, Reports, Login, CreateUser
-        ├── components/      # Layout, Sidebar, Header, ProtectedRoute, charts
-        ├── services/        # API client, auth, dashboard, report, AI service functions
-        └── styles/          # Global CSS
+        ├── pages/               # Dashboard, AIAssistant, Reports, Login, CreateUser
+        ├── components/          # Layout, Sidebar, Header, ProtectedRoute, charts
+        ├── services/            # api.js, authService, dashboardService, aiService, reportService
+        └── index.css            # Global styles and CSS variables
 ```
