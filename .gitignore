@@ -11,3 +11,4 @@ __pycache__/
 *.log
 *.log.DS_Store
 .DS_Store
+backend/sql_history.txt
